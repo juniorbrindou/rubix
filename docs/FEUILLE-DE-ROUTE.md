@@ -20,6 +20,10 @@ Prendre la première phase non cochée. Une phase est finie quand son critère e
   *Fini quand* : un état réel recopié depuis un vrai cube mélangé est accepté, et une erreur volontaire est désignée.
 - [x] **5. Lecture de la solution** (vrai cube résolu en suivant l'app, 0.5.3, le 2026-11-21) (`src/app/solution.tsx`) — barre de mouvements, nom d'étape, Précédent / Lecture / Suivant.
   *Fini quand* : un vrai cube mélangé, suivi pas à pas, finit résolu.
+- [ ] **7. Apprendre** (`src/app/apprendre.tsx`) — cube numérique qu'on résout soi-même : un doigt tourne une
+  face, deux doigts le cube ; départ d'un mélange ou de son vrai cube ; « Aide » montre le prochain mouvement
+  (flèche + consigne), un second appui le joue ; Annuler. Code livré, reste à le relier aux autres écrans.
+  *Fini quand* : sur téléphone, un cube mélangé se résout jusqu'au bout avec les gestes et l'Aide.
 - [ ] **6. Publication** — APK Android signée avec une vraie clé (aujourd'hui : clé de débogage). La distribution
   est en place : `scripts/publier-apk.sh` → `https://brindoujunior.com/rubix-v<version>.apk`.
   *Fini quand* : l'APK s'installe et le parcours complet fonctionne sans Expo Go.

@@ -39,8 +39,13 @@ cube  ←  solver  ←  input  ←  app
 - `fiber.native.ts` / `fiber.ts` : Metro prend `@react-three/fiber/native` (expo-gl) sur mobile et
   `@react-three/fiber` sur le web. Importer `Canvas`, `useFrame`, `useThree` depuis `./fiber`, jamais directement.
 - Les gestes passent par un `PanResponder` posé sur la vue qui entoure le canevas (il capture le toucher avant
-  le canevas) : glisser fait tourner le cube, un toucher bref lance un rayon. Un toucher dans le joint noir
-  entre deux cases désigne la case de la face du corps touchée (`faceletOfHit`).
+  le canevas). Deux doigts, ou un doigt hors du cube, tournent le cube. Un toucher bref lance un rayon. En
+  mode `turn`, glisser un doigt posé sur une case tourne sa couche : l'axe de la face qui suit le mieux le doigt à
+  l'écran donne une direction du modèle, que `moveFromSwipe` (`swipe.ts`, testé sur toutes les cases) change en
+  mouvement. Un toucher dans le joint noir entre deux cases désigne la case de la face du corps touchée
+  (`faceletOfHit`).
+- Le point de vue est une orbite (lacet libre, tangage borné à ±1,45 rad), jamais de roulis : le haut reste en
+  haut. `focus` et `hint` y amènent la face voulue ; le bouton ⟲ ramène la vue de départ.
 - Le sens de rotation est testé : `src/scene/__tests__/cubies.test.ts` vérifie, pour les 18 mouvements, que la
   couche tournée de l'angle `moveTurn` tombe exactement sur l'état `applyMove`.
 
