@@ -1,7 +1,7 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { PanResponder, StyleSheet, View, type GestureResponderEvent } from 'react-native';
 import * as THREE from 'three';
-import { faceletAt, moveTurn, type CubeState, type Move, type Vec3 } from '../cube';
+import { FACELET_GEOMETRY, faceletAt, moveTurn, type CubeState, type Move, type Vec3 } from '../cube';
 import { BODY_COLOR, STICKER_COLOR, cubiesOf, type Cubie } from './cubies';
 import { Canvas, useFrame, useThree } from './fiber';
 
@@ -18,14 +18,34 @@ export interface CubeViewProps {
   /** Durée d'un quart de tour, en millisecondes. */
   durationMs?: number;
   onFaceletPress?: (facelet: number) => void;
-  /** Facette à faire ressortir (cadre blanc). */
-  highlight?: number | null;
+  /** Facettes à faire ressortir (cadre blanc). */
+  highlight?: readonly number[];
+  /** Quand elle change, le cube tourne pour montrer cette facette de face. */
+  focus?: number | null;
 }
 
 /** Vue de départ : face U au-dessus, F devant, R à droite, comme on tient son cube. */
 const INITIAL_ROTATION = new THREE.Quaternion()
   .setFromAxisAngle(new THREE.Vector3(1, 0, 0), 0.5)
   .multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -0.65));
+
+const NONE: readonly number[] = [];
+
+/** Rotation qui amène une face devant (+z) en gardant le haut en haut, avant l'inclinaison de la vue de départ. */
+const FACE_TO_FRONT: Record<string, [THREE.Vector3, number]> = {
+  '0,0,1': [new THREE.Vector3(0, 1, 0), 0],
+  '1,0,0': [new THREE.Vector3(0, 1, 0), -Math.PI / 2],
+  '0,0,-1': [new THREE.Vector3(0, 1, 0), Math.PI],
+  '-1,0,0': [new THREE.Vector3(0, 1, 0), Math.PI / 2],
+  '0,1,0': [new THREE.Vector3(1, 0, 0), Math.PI / 2],
+  '0,-1,0': [new THREE.Vector3(1, 0, 0), -Math.PI / 2],
+};
+
+/** Orientation qui montre la face de `facelet` comme la vue de départ montre F : de face, un peu de biais. */
+function focusRotation(facelet: number): THREE.Quaternion {
+  const [axis, angle] = FACE_TO_FRONT[FACELET_GEOMETRY[facelet].normal.join(',')];
+  return INITIAL_ROTATION.clone().multiply(new THREE.Quaternion().setFromAxisAngle(axis, angle));
+}
 
 const TAP_SLOP = 8;
 const DRAG_SPEED = 0.01;
@@ -56,7 +76,7 @@ function StickerMesh({ normal, color, facelet, highlighted }: { normal: Vec3; co
   );
 }
 
-function CubieMesh({ cubie, highlight }: { cubie: Cubie; highlight: number | null }) {
+function CubieMesh({ cubie, highlight }: { cubie: Cubie; highlight: readonly number[] }) {
   return (
     <group position={cubie.position as [number, number, number]}>
       <mesh userData={{ cubie: cubie.position }}>
@@ -64,7 +84,7 @@ function CubieMesh({ cubie, highlight }: { cubie: Cubie; highlight: number | nul
         <meshStandardMaterial color={BODY_COLOR} roughness={0.8} />
       </mesh>
       {cubie.stickers.map((s) => (
-        <StickerMesh key={s.facelet} {...s} highlighted={s.facelet === highlight} />
+        <StickerMesh key={s.facelet} {...s} highlighted={highlight.includes(s.facelet)} />
       ))}
     </group>
   );
@@ -99,11 +119,13 @@ function Cube({
   highlight,
   rootRef,
   handleRef,
+  focusRef,
 }: Required<Pick<CubeViewProps, 'state' | 'durationMs'>> & {
   animation: CubeAnimation | null;
-  highlight: number | null;
+  highlight: readonly number[];
   rootRef: React.RefObject<THREE.Group | null>;
   handleRef: React.RefObject<SceneHandle | null>;
+  focusRef: React.RefObject<THREE.Quaternion | null>;
 }) {
   const camera = useThree((s) => s.camera);
   const layerRef = useRef<THREE.Group>(null);
@@ -117,6 +139,11 @@ function Cube({
 
   useFrame((_, delta) => {
     if (rootRef.current) handleRef.current = { camera, root: rootRef.current };
+    const target = focusRef.current;
+    if (target && rootRef.current) {
+      rootRef.current.quaternion.slerp(target, Math.min(1, delta * 6));
+      if (rootRef.current.quaternion.angleTo(target) < 0.01) focusRef.current = null;
+    }
     const p = progress.current;
     const layer = layerRef.current;
     if (!layer || !turn || !p.animation) return;
@@ -149,8 +176,12 @@ function Cube({
  * Cube 3D. On le fait tourner en glissant le doigt ; un toucher bref sur une facette appelle `onFaceletPress`.
  * Ce qu'il affiche vient toujours de `state` : l'animation ne fait que rejouer un mouvement sur cet état.
  */
-export function CubeView({ state, animation = null, durationMs = 300, onFaceletPress, highlight = null }: CubeViewProps) {
+export function CubeView({ state, animation = null, durationMs = 300, onFaceletPress, highlight = NONE, focus = null }: CubeViewProps) {
   const rootRef = useRef<THREE.Group>(null);
+  const focusRef = useRef<THREE.Quaternion | null>(null);
+  useEffect(() => {
+    if (focus !== null) focusRef.current = focusRotation(focus);
+  }, [focus]);
   const handleRef = useRef<SceneHandle | null>(null);
   const size = useRef({ width: 1, height: 1 });
   const last = useRef({ dx: 0, dy: 0 });
@@ -171,7 +202,10 @@ export function CubeView({ state, animation = null, durationMs = 300, onFaceletP
       PanResponder.create({
         onStartShouldSetPanResponderCapture: () => true,
         onMoveShouldSetPanResponderCapture: () => true,
-        onPanResponderGrant: () => (last.current = { dx: 0, dy: 0 }),
+        onPanResponderGrant: () => {
+          last.current = { dx: 0, dy: 0 };
+          focusRef.current = null;
+        },
         onPanResponderMove: (_, g) => {
           const root = rootRef.current;
           if (!root) return;
@@ -205,6 +239,7 @@ export function CubeView({ state, animation = null, durationMs = 300, onFaceletP
           highlight={highlight}
           rootRef={rootRef}
           handleRef={handleRef}
+          focusRef={focusRef}
         />
       </Canvas>
     </View>

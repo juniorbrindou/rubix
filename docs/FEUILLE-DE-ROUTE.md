@@ -12,7 +12,7 @@ Prendre la première phase non cochée. Une phase est finie quand son critère e
 - [x] **2. Solveur** (`src/solver`) — les sept étapes, leurs prédicats, la `Solution` étiquetée par étape.
   *Fini quand* : les critères « Fini quand » de `docs/METHODE-DEBUTANT.md` sont tenus. Le temps sur téléphone
   n'a pas encore été mesuré (27 ms au pire sur le serveur) : il passe dans le critère de la phase 3.
-- [ ] **3. Scène 3D** (`src/scene`) — cube affiché depuis une chaîne d'état, rotation du cube au doigt, toucher
+- [x] **3. Scène 3D** (confirmée sur téléphone par l'utilisateur le 2026-11-21) (`src/scene`) — cube affiché depuis une chaîne d'état, rotation du cube au doigt, toucher
   d'une facette qui renvoie son indice, animation d'un mouvement.
   *Fini quand* : sur téléphone, `R U R' U'` s'anime et l'état affiché à la fin égale celui du modèle ; le temps
   d'un `solve` sur un mélange y est affiché et reste sous 200 ms.

@@ -60,6 +60,12 @@ export function faceletAt(position: Vec3, normal: Vec3): number {
   return i;
 }
 
+/** Toutes les facettes de la pièce qui porte `facelet` (elle comprise). */
+export function pieceFacelets(facelet: number): number[] {
+  const [x, y, z] = FACELET_GEOMETRY[facelet].position;
+  return FACELET_GEOMETRY.flatMap(({ position: p }, i) => (p[0] === x && p[1] === y && p[2] === z ? [i] : []));
+}
+
 export type Axis = 0 | 1 | 2;
 
 /** Quart de tour dans le sens trigonométrique (antihoraire) autour de l'axe positif, répété `quarters` fois. */
