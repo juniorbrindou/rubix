@@ -23,10 +23,11 @@ Avancement et prochaine tâche : [`docs/FEUILLE-DE-ROUTE.md`](docs/FEUILLE-DE-RO
 - **Commits** : message en français, sans trailer `Co-Authored-By` ni mention d'assistant.
 - **Livrer** : un changement est vert quand `npm test`, `npm run typecheck` et `npx expo-doctor` passent ; alors
   commit puis push sur `master`.
-- **APK** : l'utilisateur n'a pas Expo Go ; il essaie l'APK. Le serveur la construit lui-même (SDK Android dans
-  `/opt/android-sdk`, JDK 17) : `npx expo prebuild --platform android`, puis dans `android/` :
-  `./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a`. Le lien à donner est celui d'une
-  release GitHub (`gh release create v<version> <apk>`), contrôlé par un téléchargement avant d'être annoncé.
+- **APK** : l'utilisateur n'a pas Expo Go ; il essaie l'APK, construite sur le serveur (SDK Android dans
+  `/opt/android-sdk`, JDK 17). Pour publier : augmenter `expo.version` et `expo.android.versionCode` dans
+  `app.json`, puis `scripts/publier-apk.sh "ce qui change"`. Le script construit, dépose l'APK dans
+  `/var/www/rubix-releases` (servi par le site nginx `brindoujunior`), écrit `rubix-latest.json` et vérifie le
+  téléchargement. Le lien à donner est celui qu'il affiche : `https://brindoujunior.com/rubix-v<version>.apk`.
   Le serveur n'est pas connecté à un compte Expo : ni EAS, ni `expo start --tunnel` sans `ngrok`.
 - **Plantage sur téléphone** : aucun journal n'est accessible d'ici. Une erreur JavaScript s'affiche à l'écran
   au lieu de fermer l'app (`src/app/_layout.tsx`) : demander une capture. Si l'app se ferme quand même,
