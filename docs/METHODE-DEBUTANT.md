@@ -21,11 +21,17 @@ facettes de ce prédicat. Les étapes sont cumulatives : l'étape n exige aussi 
 
 ## Comment chaque étape cherche ses mouvements
 
-- **Étape 1** : une arête blanche à la fois, recherche bornée (IDA*, profondeur ≤ 8) sur les 18 mouvements, sous
-  contrainte de garder en place les arêtes déjà posées.
-- **Étapes 2 et 3** : procédé fixe par pièce. Amener la pièce en U au-dessus de sa case (ou l'en sortir avec
-  l'algorithme si elle est coincée en dessous, mal placée), puis appliquer l'algorithme. Pour un coin, `R U R' U'`
-  au-dessus de la case DFR, répété jusqu'à ce qu'il soit posé (1, 3 ou 5 fois).
+Le solveur n'émet que des mouvements de faces, sans rotation du cube : pour une case autre que celle de devant à
+droite, l'algorithme est réécrit dans le repère de cette case (`inFrame` : `R U R' U'` vu depuis R devient
+`B U B' U'`).
+
+- **Étape 1** (`cross.ts`) : une arête blanche à la fois, celle qui se pose le plus vite, par IDA* sur les 18
+  mouvements en gardant en place les arêtes déjà posées. Heuristique : la plus grande des distances de chaque arête
+  à sa place, précalculée.
+- **Étapes 2 et 3** (`layers.ts`) : par pièce. Une pièce coincée dans la mauvaise case (ou mal tournée) en sort
+  par l'algorithme de cette case. Puis on essaie chaque ajustement de U (0 à 3) suivi de l'algorithme — répété
+  1, 3 ou 5 fois pour un coin ; inséré par la droite ou par la gauche pour une arête — et on garde le plus court
+  qui pose la pièce.
 - **Étapes 4 à 7** : recherche en largeur sur les **macro-coups** `{U, U', U2, algorithme de l'étape}`, jusqu'au
   prédicat. L'espace est minuscule ; la recherche choisit les ajustements, ce qui évite de coder la table des cas
   à la main.
@@ -39,3 +45,6 @@ trouvés, pas d'une table écrite à part.
   après chaque étape son prédicat est vrai.
 - Chaque algorithme du tableau a un test qui vérifie qu'il préserve les étapes précédentes (sauf l'ajustement U).
 - Une solution complète se calcule en moins de 200 ms sur un téléphone d'entrée de gamme, mesuré.
+
+Mesures du 2026-11-21 (Node, serveur) : 145 mouvements en moyenne, 201 au pire (croix 8, premier étage 49,
+deuxième 37, croix jaune 9, face jaune 16, coins jaunes 11, arêtes jaunes 15) ; calcul médian 9 ms, pire 27 ms.

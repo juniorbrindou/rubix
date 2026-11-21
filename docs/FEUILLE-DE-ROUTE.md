@@ -9,11 +9,13 @@ Prendre la première phase non cochée. Une phase est finie quand son critère e
 - [x] **1. Modèle du cube** (`src/cube`) — chaîne d'état, application d'un mouvement et d'une séquence, inverse,
   validation avec facette fautive.
   *Fini quand* : tous les tests d'invariants de `docs/MODELE-CUBE.md` passent.
-- [ ] **2. Solveur** (`src/solver`) — les sept étapes, leurs prédicats, la `Solution` étiquetée par étape.
-  *Fini quand* : les critères « Fini quand » de `docs/METHODE-DEBUTANT.md` sont tenus.
+- [x] **2. Solveur** (`src/solver`) — les sept étapes, leurs prédicats, la `Solution` étiquetée par étape.
+  *Fini quand* : les critères « Fini quand » de `docs/METHODE-DEBUTANT.md` sont tenus. Le temps sur téléphone
+  n'a pas encore été mesuré (27 ms au pire sur le serveur) : il passe dans le critère de la phase 3.
 - [ ] **3. Scène 3D** (`src/scene`) — cube affiché depuis une chaîne d'état, rotation du cube au doigt, toucher
   d'une facette qui renvoie son indice, animation d'un mouvement.
-  *Fini quand* : sur téléphone, `R U R' U'` s'anime et l'état affiché à la fin égale celui du modèle.
+  *Fini quand* : sur téléphone, `R U R' U'` s'anime et l'état affiché à la fin égale celui du modèle ; le temps
+  d'un `solve` sur un mélange y est affiché et reste sous 200 ms.
 - [ ] **4. Saisie** (`src/input`, `src/app/index.tsx`) — préréglages animés, palette, compteur, validation visuelle.
   *Fini quand* : un état réel recopié depuis un vrai cube mélangé est accepté, et une erreur volontaire est désignée.
 - [ ] **5. Lecture de la solution** (`src/app/solution.tsx`) — barre de mouvements, nom d'étape, Précédent / Lecture / Suivant.

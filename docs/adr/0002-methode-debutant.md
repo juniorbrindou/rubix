@@ -4,7 +4,7 @@ Date : 2026-11-21 · Statut : accepté
 
 ## Contexte
 
-Deux familles de solveurs : la méthode débutant (étage par étage, ~50 à 100 mouvements) et la méthode optimale
+Deux familles de solveurs : la méthode débutant (étage par étage, ~145 mouvements mesurés) et la méthode optimale
 de Kociemba (~20 mouvements, aucune logique lisible pour un humain).
 
 ## Décision
