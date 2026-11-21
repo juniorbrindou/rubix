@@ -19,10 +19,24 @@ Avancement et prochaine tâche : [`docs/FEUILLE-DE-ROUTE.md`](docs/FEUILLE-DE-RO
   [`CONTEXT.md`](CONTEXT.md) donne la correspondance ; un nouveau terme métier y entre avant d'entrer dans le code.
 - **Petit écran** : chaque écran se vérifie sur un téléphone de 360 dp de large, sans défilement parasite.
 - **Commits** : message en français, sans trailer `Co-Authored-By` ni mention d'assistant.
-- **Livrer** : après un changement vert, commit puis push sur `master`. Les builds mobiles passent par EAS
-  (le serveur n'a pas de SDK Android) ; l'essai sur téléphone passe par Expo Go (`npx expo start --tunnel`).
+- **Livrer** : un changement est vert quand `npm test`, `npm run typecheck` et `npx expo-doctor` passent ; alors
+  commit puis push sur `master`. Les builds mobiles passent par EAS (le serveur n'a pas de SDK Android). L'essai
+  sur téléphone passe par Expo Go via `npx expo start --tunnel ngrok` (le serveur n'est pas connecté à un compte
+  Expo, `--tunnel` seul échoue).
 
-Les commandes (tests, lint, lancement) sont celles des scripts de `package.json`.
+## Expo
+
+Expo casse ses API à chaque SDK : ta mémoire d'entraînement est périmée. Avant de toucher une API Expo, EAS ou
+React Native, lis la documentation de la version majeure de `expo` dans `package.json`
+(`https://docs.expo.dev/versions/v<majeure>.0.0/`), ou l'index `https://docs.expo.dev/llms.txt`.
+
+- **Ajouter un paquet** : `npx expo install <paquet>`, qui choisit la version compatible avec le SDK. Pour un
+  paquet de développement, vérifier ensuite qu'il est rangé dans `devDependencies` : `-- --save-dev` ne le fait pas.
+- **Expo Go** n'embarque que ses propres modules natifs : une bibliothèque à code natif hors de cette liste exige
+  un build de développement EAS. `ios/` et `android/` sont générés ; la configuration native passe par `app.json`.
+- **TypeScript 6** met `types` à vide par défaut : un paquet de types globaux (comme `jest`) s'ajoute à
+  `compilerOptions.types` dans `tsconfig.json`.
+- **Routes** : chaque fichier de `src/app/` est un écran ; le code qui n'est pas un écran vit ailleurs dans `src/`.
 
 ## Où lire
 

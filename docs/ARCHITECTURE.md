@@ -13,7 +13,7 @@ Les versions sont celles de `package.json`.
 ## Dossiers
 
 ```
-app/            écrans (expo-router) : saisie, solution
+src/app/        écrans (expo-router) : saisie, solution
 src/cube/       modèle pur : chaîne d'état, mouvements, validation
 src/solver/     méthode débutant : étapes, prédicats, recherche
 src/scene/      rendu 3D : cube, sélection d'une facette, animation d'un mouvement
@@ -30,8 +30,8 @@ cube  ←  solver  ←  input  ←  app
   └──── scene ────────┘
 ```
 
-`src/cube` ne dépend de rien. `src/solver` ne dépend que de `src/cube`. Seuls `src/scene`, `src/ui` et `app`
-importent React ou three.js. Une flèche dans l'autre sens est une erreur de conception, pas un raccourci.
+(`app` = `src/app`.) `src/cube` ne dépend de rien. `src/solver` ne dépend que de `src/cube`. Seuls `src/scene`,
+`src/ui` et `src/app` importent React ou three.js. Une flèche dans l'autre sens est une erreur de conception, pas un raccourci.
 
 ## Animation d'un mouvement
 

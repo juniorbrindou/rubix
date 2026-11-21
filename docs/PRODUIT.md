@@ -20,8 +20,8 @@ faire, mouvement par mouvement, animé en 3D, jusqu'au cube résolu.
 
 ## Écrans
 
-- `app/index` : saisie (étapes 1 à 4 du parcours).
-- `app/solution` : lecture de la solution (étape 5).
+- `src/app/index.tsx` : saisie (étapes 1 à 4 du parcours).
+- `src/app/solution.tsx` : lecture de la solution (étape 5).
 
 ## Repères visuels
 
