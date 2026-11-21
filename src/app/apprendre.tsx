@@ -1,12 +1,14 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SOLVED, applyMove, applyMoves, invertMove, randomScramble, validate, type Move } from '@/cube';
 import { CubeView } from '@/scene/CubeView';
 import { STAGE_LABEL, solve, type SolutionStep } from '@/solver';
+import { ActionButton, CubeStage, Dock, QuietButton, ScreenHeader } from '@/ui/components';
 import { describeMove } from '@/ui/moveText';
+import { GUTTER, color, font, radius, space } from '@/ui/theme';
 
 // Volet « Apprendre » : un cube numérique qu'on résout soi-même. « Aide » montre le prochain mouvement de la
 // méthode débutant, calculé depuis l'état où l'on en est ; un second appui le joue.
@@ -67,83 +69,90 @@ export default function LearnScreen() {
     setHint(null);
   };
 
+  const count = `${history.length} coup${history.length > 1 ? 's' : ''}`;
+
   return (
-    <SafeAreaView style={styles.screen}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.header}>
-          <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} hitSlop={10}>
-            <Text style={styles.back}>‹ Retour</Text>
-          </Pressable>
-          <Text style={styles.title}>Apprendre</Text>
-          <Text style={styles.count}>{history.length} coup{history.length > 1 ? 's' : ''}</Text>
-        </View>
-        <Text style={styles.subtitle}>
-          {fromRealCube ? 'Ton cube, à résoudre toi-même.' : 'Un cube mélangé, à résoudre toi-même.'}
-        </Text>
+    <SafeAreaView style={styles.screen} edges={['top', 'left', 'right']}>
+      <ScreenHeader
+        top={
+          <View style={styles.topRow}>
+            <QuietButton label="‹ Retour" onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} />
+            <Text style={styles.counter}>{count}</Text>
+          </View>
+        }
+        eyebrow="Apprendre"
+        title="Résous-le toi-même"
+        subtitle={fromRealCube ? 'Ton cube, tel que tu l’as saisi.' : 'Un cube mélangé au hasard.'}
+      />
 
+      <CubeStage>
         <CubeView state={state} animation={animation} durationMs={MOVE_MS} mode="turn" onTurn={play} hint={hint?.move ?? null} />
+      </CubeStage>
 
-        <View style={styles.panel}>
-          {solved ? (
-            <Text style={styles.done}>Bravo, tu l’as résolu en {history.length} coups !</Text>
-          ) : hint ? (
-            <>
+      <View style={styles.panel}>
+        {solved ? (
+          <Text style={styles.done}>{history.length ? `Bravo, résolu en ${count} !` : 'Ce cube est déjà résolu.'}</Text>
+        ) : hint ? (
+          <View style={styles.hintRow}>
+            <View style={styles.moveTile}>
+              <Text style={styles.moveTileText} numberOfLines={1} adjustsFontSizeToFit>
+                {hint.move}
+              </Text>
+            </View>
+            <View style={styles.hintText}>
               <Text style={styles.stage}>
                 {STAGE_LABEL[hint.stage]} · {hint.label}
               </Text>
-              <Text style={styles.instruction}>
-                {hint.move} — {describeMove(hint.move)}
-              </Text>
-              <Text style={styles.note}>Suis la flèche rose, ou appuie encore sur Aide pour que je le fasse.</Text>
-            </>
-          ) : (
-            <Text style={styles.note}>
-              Glisse un doigt sur une face pour la tourner, deux doigts pour tourner le cube. Bloqué ? Appuie sur Aide.
-            </Text>
-          )}
-        </View>
+              <Text style={styles.instruction}>{describeMove(hint.move)}</Text>
+            </View>
+          </View>
+        ) : (
+          <Text style={styles.note}>Glisse un doigt sur une face pour la tourner, deux doigts pour tourner le cube. Bloqué ? Aide.</Text>
+        )}
+      </View>
 
+      <Dock>
         <View style={styles.controls}>
-          <Button label="Annuler" onPress={undo} disabled={!history.length || !!pending} />
-          <Button label={hint ? 'Fais-le' : 'Aide'} onPress={help} disabled={solved || !!pending} primary />
-          <Button label="Mélanger" onPress={reshuffle} disabled={!!pending} />
+          <ActionButton label="Annuler" onPress={undo} disabled={!history.length || !!pending} style={styles.side} />
+          <ActionButton
+            label={hint ? 'Fais-le' : 'Aide'}
+            sublabel={hint ? 'ou suis la flèche' : undefined}
+            onPress={help}
+            disabled={solved || !!pending}
+            variant="go"
+            style={styles.main}
+          />
+          <ActionButton label="Mélanger" onPress={reshuffle} disabled={!!pending} style={styles.side} />
         </View>
-      </ScrollView>
+      </Dock>
       <StatusBar style="dark" />
     </SafeAreaView>
   );
 }
 
-function Button({ label, onPress, disabled, primary }: { label: string; onPress: () => void; disabled?: boolean; primary?: boolean }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled}
-      style={({ pressed }) => [styles.button, primary && styles.primary, pressed && styles.pressed, disabled && styles.disabled]}
-    >
-      <Text style={[styles.buttonText, primary && styles.primaryText]}>{label}</Text>
-    </Pressable>
-  );
-}
-
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#FAFAF7' },
-  content: { paddingHorizontal: 16, paddingVertical: 12 },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  back: { fontSize: 16, color: '#555', minWidth: 70 },
-  title: { fontSize: 22, fontWeight: '700' },
-  count: { fontSize: 14, color: '#777', minWidth: 70, textAlign: 'right', fontVariant: ['tabular-nums'] },
-  subtitle: { marginTop: 4, fontSize: 15, color: '#555', textAlign: 'center' },
-  panel: { minHeight: 92, justifyContent: 'center', marginTop: 4 },
-  stage: { fontSize: 14, fontWeight: '600', color: '#B0126B', textAlign: 'center' },
-  instruction: { marginTop: 4, fontSize: 16, color: '#222', textAlign: 'center' },
-  note: { marginTop: 6, fontSize: 14, color: '#666', textAlign: 'center' },
-  done: { fontSize: 18, fontWeight: '700', color: '#1B7F3B', textAlign: 'center' },
-  controls: { marginTop: 8, flexDirection: 'row', gap: 8 },
-  button: { flex: 1, paddingVertical: 14, borderRadius: 12, borderWidth: 1, borderColor: '#DDD', backgroundColor: '#FFF', alignItems: 'center' },
-  primary: { backgroundColor: '#111', borderColor: '#111' },
-  pressed: { opacity: 0.7 },
-  disabled: { opacity: 0.35 },
-  buttonText: { fontSize: 16, color: '#111' },
-  primaryText: { color: '#FFF', fontWeight: '600' },
+  screen: { flex: 1, backgroundColor: color.mat },
+  topRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: space.xs },
+  counter: { fontFamily: font.displayMedium, fontSize: 14, color: color.inkSoft, fontVariant: ['tabular-nums'] },
+  panel: { minHeight: 76, paddingHorizontal: GUTTER, justifyContent: 'center', marginBottom: space.sm },
+  hintRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  moveTile: {
+    width: 64,
+    height: 64,
+    borderRadius: radius.plate,
+    backgroundColor: color.plate,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+    borderColor: '#FF2D95', // la couleur de la flèche d'aide sur le cube
+  },
+  moveTileText: { fontFamily: font.display, fontSize: 26, color: color.onPlate },
+  hintText: { flex: 1 },
+  stage: { fontFamily: font.bodyBold, fontSize: 13, color: color.inkMute },
+  instruction: { marginTop: 2, fontFamily: font.body, fontSize: 15, lineHeight: 20, color: color.ink },
+  note: { fontFamily: font.body, fontSize: 15, lineHeight: 21, color: color.inkSoft, textAlign: 'center' },
+  done: { fontFamily: font.display, fontSize: 18, color: color.ok, textAlign: 'center' },
+  controls: { flexDirection: 'row', gap: space.sm },
+  side: { flex: 1 },
+  main: { flex: 1.3 },
 });

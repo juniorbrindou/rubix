@@ -86,6 +86,14 @@ export default function InputScreen() {
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'left', 'right']}>
       <ScreenHeader
+        top={
+          <View style={styles.topRow}>
+            <QuietButton
+              label={status.kind === 'valid' ? 'Le résoudre moi-même ›' : 'Apprendre sur un cube mélangé ›'}
+              onPress={() => router.push(status.kind === 'valid' ? { pathname: '/apprendre', params: { state } } : '/apprendre')}
+            />
+          </View>
+        }
         title="Montre-moi ton cube"
         subtitle="Jaune en haut, vert face à toi."
         aside={
@@ -196,6 +204,7 @@ function describe(status: ReturnType<typeof inputStatus>, state: string, level: 
 }
 
 const styles = StyleSheet.create({
+  topRow: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 2 },
   screen: { flex: 1, backgroundColor: color.mat },
   section: {
     marginTop: space.md,

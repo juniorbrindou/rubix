@@ -22,7 +22,7 @@ Prendre la première phase non cochée. Une phase est finie quand son critère e
   *Fini quand* : un vrai cube mélangé, suivi pas à pas, finit résolu.
 - [ ] **7. Apprendre** (`src/app/apprendre.tsx`) — cube numérique qu'on résout soi-même : un doigt tourne une
   face, deux doigts le cube ; départ d'un mélange ou de son vrai cube ; « Aide » montre le prochain mouvement
-  (flèche + consigne), un second appui le joue ; Annuler. Code livré, reste à le relier aux autres écrans.
+  (flèche + consigne), un second appui le joue ; Annuler. Accès en haut de l'écran de saisie (0.6.1).
   *Fini quand* : sur téléphone, un cube mélangé se résout jusqu'au bout avec les gestes et l'Aide.
 - [ ] **6. Publication** — APK Android signée avec une vraie clé (aujourd'hui : clé de débogage). La distribution
   est en place : `scripts/publier-apk.sh` → `https://brindoujunior.com/rubix-v<version>.apk`.

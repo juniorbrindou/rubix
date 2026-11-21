@@ -2,7 +2,7 @@
   "expo": {
     "name": "Rubix",
     "slug": "rubix",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -19,7 +19,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.brindoujunior.rubix",
-      "versionCode": 600
+      "versionCode": 601
     },
     "web": {
       "favicon": "./assets/favicon.png"
