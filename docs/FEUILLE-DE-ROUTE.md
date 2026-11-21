@@ -6,7 +6,7 @@ Prendre la première phase non cochée. Une phase est finie quand son critère e
 - [x] **0. Squelette Expo** — SDK 58, expo-router (`src/app`), `three`, `@react-three/fiber`, `expo-gl`,
   `zustand`, `jest-expo`.
   *Fini quand* : `npm test` passe (un test factice), et `npx expo start --tunnel ngrok` sert l'écran d'accueil.
-- [ ] **1. Modèle du cube** (`src/cube`) — chaîne d'état, application d'un mouvement et d'une séquence, inverse,
+- [x] **1. Modèle du cube** (`src/cube`) — chaîne d'état, application d'un mouvement et d'une séquence, inverse,
   validation avec facette fautive.
   *Fini quand* : tous les tests d'invariants de `docs/MODELE-CUBE.md` passent.
 - [ ] **2. Solveur** (`src/solver`) — les sept étapes, leurs prédicats, la `Solution` étiquetée par étape.

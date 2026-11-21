@@ -18,7 +18,7 @@ Un terme par ligne : terme français (affiché, documenté) → nom dans le code
 ## Les mouvements
 
 - **Mouvement** → `Move` : quart de tour, demi-tour ou quart de tour inverse d'une face (`R`, `R'`, `R2`).
-- **Rotation** → `Rotation` : tour du cube entier (`x`, `y`, `z`) ; ne change pas l'état, seulement le point de vue.
+- **Rotation** : tour du cube entier (`x`, `y`, `z`) ; change le point de vue, pas l'état. Absente du modèle ; la 3D fait tourner la caméra.
 - **Algorithme** → `Algorithm` : suite de mouvements nommée, apprise par cœur (« Sune »).
 - **Ajustement** → `AUF` : tour de U placé avant ou après un algorithme pour amener le bon cas devant soi.
 

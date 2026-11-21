@@ -48,17 +48,18 @@ Ce format est celui des solveurs existants (Kociemba, `cubejs`) : un état produ
 ## Notation des mouvements
 
 Singmaster. `R` = quart de tour **horaire** de la face R, vu en regardant cette face de face. `R'` = antihoraire,
-`R2` = demi-tour. Idem `U F D L B`. Rotations du cube entier : `x` (comme R), `y` (comme U), `z` (comme F).
+`R2` = demi-tour. Idem `U F D L B`. Les rotations du cube entier (`x`, `y`, `z`) changent le point de vue, pas
+l'état : elles n'existent pas dans le modèle, et le solveur n'en émet pas (les centres restent à leur place).
 
 Une séquence s'écrit séparée par des espaces : `R U R' U R U2 R'`.
 
 ## Validité d'un état
 
 Un état est valide si et seulement si toutes ces règles tiennent ; la validation renvoie la **première facette
-fautive** pour que l'écran la montre.
+fautive** pour que l'écran la montre (règles 1 à 4), ou aucune quand la faute tient au cube entier (règles 5 à 7).
 
-1. 9 facettes de chaque face, aucune `?`.
-2. Les six centres sont distincts.
+1. 54 facettes, aucune `?`, 9 de chaque face.
+2. Chaque centre porte la lettre de sa face : les centres sont fixes, la saisie ne les modifie pas.
 3. Chaque coin porte trois couleurs de faces deux à deux adjacentes, et chacun des 8 coins existe une seule fois.
 4. Chaque arête porte deux couleurs de faces adjacentes, et chacune des 12 arêtes existe une seule fois.
 5. Somme des torsions des coins ≡ 0 (mod 3).
