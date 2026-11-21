@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { PanResponder, StyleSheet, View, type GestureResponderEvent } from 'react-native';
 import * as THREE from 'three';
 import { FACELET_GEOMETRY, faceletAt, moveTurn, type CubeState, type Move, type Vec3 } from '../cube';
+import { mark, markHealthy } from '../diagnostics';
 import { BODY_COLOR, STICKER_COLOR, cubiesOf, type Cubie } from './cubies';
 import { Canvas, useFrame, useThree } from './fiber';
 
@@ -137,7 +138,11 @@ function Cube({
 
   if (progress.current.animation !== animation) progress.current = { animation, elapsed: 0, done: false };
 
+  const frames = useRef(0);
   useFrame((_, delta) => {
+    frames.current++;
+    if (frames.current === 1) mark('3D : première image');
+    if (frames.current === 60) markHealthy();
     if (rootRef.current) handleRef.current = { camera, root: rootRef.current };
     const target = focusRef.current;
     if (target && rootRef.current) {
@@ -182,6 +187,7 @@ export function CubeView({ state, animation = null, durationMs = 300, onFaceletP
   useEffect(() => {
     if (focus !== null) focusRef.current = focusRotation(focus);
   }, [focus]);
+  useEffect(() => mark('3D : vue montée, avant le canevas'), []);
   const handleRef = useRef<SceneHandle | null>(null);
   const size = useRef({ width: 1, height: 1 });
   const last = useRef({ dx: 0, dy: 0 });
@@ -229,7 +235,11 @@ export function CubeView({ state, animation = null, durationMs = 300, onFaceletP
       onLayout={(e) => (size.current = { width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height })}
       {...responder.panHandlers}
     >
-      <Canvas camera={{ position: [0, 0, 7.5], fov: 40 }} style={styles.canvas}>
+      <Canvas
+        camera={{ position: [0, 0, 7.5], fov: 40 }}
+        style={styles.canvas}
+        onCreated={() => mark('3D : contexte GL créé')}
+      >
         <ambientLight intensity={1.6} />
         <directionalLight position={[3, 5, 6]} intensity={1.4} />
         <Cube
