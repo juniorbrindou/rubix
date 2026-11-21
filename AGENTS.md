@@ -28,6 +28,9 @@ Avancement et prochaine tâche : [`docs/FEUILLE-DE-ROUTE.md`](docs/FEUILLE-DE-RO
   `./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a`. Le lien à donner est celui d'une
   release GitHub (`gh release create v<version> <apk>`), contrôlé par un téléchargement avant d'être annoncé.
   Le serveur n'est pas connecté à un compte Expo : ni EAS, ni `expo start --tunnel` sans `ngrok`.
+- **Plantage sur téléphone** : aucun journal n'est accessible d'ici. Une erreur JavaScript s'affiche à l'écran
+  au lieu de fermer l'app (`src/app/_layout.tsx`) : demander une capture. Si l'app se ferme quand même,
+  l'erreur est native (GL, module), pas JavaScript.
 
 ## Expo
 

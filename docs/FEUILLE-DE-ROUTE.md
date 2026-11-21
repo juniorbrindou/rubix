@@ -16,7 +16,7 @@ Prendre la première phase non cochée. Une phase est finie quand son critère e
   d'une facette qui renvoie son indice, animation d'un mouvement.
   *Fini quand* : sur téléphone, `R U R' U'` s'anime et l'état affiché à la fin égale celui du modèle ; le temps
   d'un `solve` sur un mélange y est affiché et reste sous 200 ms.
-- [ ] **4. Saisie** (`src/input`, `src/app/index.tsx`) — préréglages animés, palette, compteur, validation visuelle.
+- [x] **4. Saisie** (confirmée sur téléphone par l'utilisateur le 2026-11-21) (`src/input`, `src/app/index.tsx`) — préréglages animés, palette, compteur, validation visuelle.
   *Fini quand* : un état réel recopié depuis un vrai cube mélangé est accepté, et une erreur volontaire est désignée.
 - [ ] **5. Lecture de la solution** (`src/app/solution.tsx`) — barre de mouvements, nom d'étape, Précédent / Lecture / Suivant.
   *Fini quand* : un vrai cube mélangé, suivi pas à pas, finit résolu.

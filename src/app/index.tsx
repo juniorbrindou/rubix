@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -101,6 +102,14 @@ export default function InputScreen() {
         </View>
 
         <Text style={[styles.message, styles[tone]]}>{hint ?? message}</Text>
+        {status.kind === 'valid' && (
+          <Pressable
+            onPress={() => router.push({ pathname: '/solution', params: { state } })}
+            style={({ pressed }) => [styles.solve, pressed && { opacity: 0.7 }]}
+          >
+            <Text style={styles.solveText}>Voir la solution</Text>
+          </Pressable>
+        )}
 
         <Text style={styles.section}>Ce que tu as déjà fini</Text>
         <View style={styles.stages}>
@@ -195,6 +204,8 @@ const styles = StyleSheet.create({
   stageOn: { backgroundColor: '#111', borderColor: '#111' },
   stageText: { fontSize: 14, color: '#222' },
   stageTextOn: { color: '#FFF' },
+  solve: { marginTop: 8, paddingVertical: 14, borderRadius: 12, backgroundColor: '#111', alignItems: 'center' },
+  solveText: { fontSize: 17, color: '#FFF', fontWeight: '600' },
   reset: { marginTop: 18, alignSelf: 'center', paddingVertical: 10, paddingHorizontal: 18 },
   resetText: { fontSize: 15, color: '#666', textDecorationLine: 'underline' },
 });
