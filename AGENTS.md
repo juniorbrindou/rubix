@@ -43,6 +43,10 @@ React Native, lis la documentation de la version majeure de `expo` dans `package
   paquet de développement, vérifier ensuite qu'il est rangé dans `devDependencies` : `-- --save-dev` ne le fait pas.
 - **Expo Go** n'embarque que ses propres modules natifs : une bibliothèque à code natif hors de cette liste exige
   un build de développement EAS. `ios/` et `android/` sont générés ; la configuration native passe par `app.json`.
+- **R8** (minification, active en release depuis le SDK 58) retire le code Java appelé par réflexion ou JNI :
+  l'APK plante alors que le web et les tests passent. Une bibliothèque native touchée reçoit une règle `-keep`
+  dans `extraProguardRules` (plugin `expo-build-properties` de `app.json`), comme expo-gl.
+- **three.js** n'est servi qu'en module ES par `metro.config.js` : son entrée CommonJS plante sur téléphone.
 - **TypeScript 6** met `types` à vide par défaut : un paquet de types globaux (comme `jest`) s'ajoute à
   `compilerOptions.types` dans `tsconfig.json`.
 - **Routes** : chaque fichier de `src/app/` est un écran ; le code qui n'est pas un écran vit ailleurs dans `src/`.

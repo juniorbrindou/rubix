@@ -2,7 +2,7 @@
   "expo": {
     "name": "Rubix",
     "slug": "rubix",
-    "version": "0.5.2",
+    "version": "0.5.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -19,14 +19,22 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.brindoujunior.rubix",
-      "versionCode": 502
+      "versionCode": 503
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router",
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraProguardRules": "# R8 (actif en SDK 58) retire le constructeur de GLView et GLContext.flush, appelés par réflexion/JNI : la 3D plante au démarrage. https://github.com/expo/expo/issues/51948\n-keep class expo.modules.gl.** { *; }"
+          }
+        }
+      ]
     ],
     "scheme": "rubix",
     "experiments": {
