@@ -20,9 +20,12 @@ Avancement et prochaine tâche : [`docs/FEUILLE-DE-ROUTE.md`](docs/FEUILLE-DE-RO
 - **Petit écran** : chaque écran se vérifie sur un téléphone de 360 dp de large, sans défilement parasite.
 - **Commits** : message en français, sans trailer `Co-Authored-By` ni mention d'assistant.
 - **Livrer** : un changement est vert quand `npm test`, `npm run typecheck` et `npx expo-doctor` passent ; alors
-  commit puis push sur `master`. Les builds mobiles passent par EAS (le serveur n'a pas de SDK Android). L'essai
-  sur téléphone passe par Expo Go via `npx expo start --tunnel ngrok` (le serveur n'est pas connecté à un compte
-  Expo, `--tunnel` seul échoue).
+  commit puis push sur `master`.
+- **APK** : l'utilisateur n'a pas Expo Go ; il essaie l'APK. Le serveur la construit lui-même (SDK Android dans
+  `/opt/android-sdk`, JDK 17) : `npx expo prebuild --platform android`, puis dans `android/` :
+  `./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a`. Le lien à donner est celui d'une
+  release GitHub (`gh release create v<version> <apk>`), contrôlé par un téléchargement avant d'être annoncé.
+  Le serveur n'est pas connecté à un compte Expo : ni EAS, ni `expo start --tunnel` sans `ngrok`.
 
 ## Expo
 

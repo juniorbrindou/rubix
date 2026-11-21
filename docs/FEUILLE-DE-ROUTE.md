@@ -18,5 +18,5 @@ Prendre la première phase non cochée. Une phase est finie quand son critère e
   *Fini quand* : un état réel recopié depuis un vrai cube mélangé est accepté, et une erreur volontaire est désignée.
 - [ ] **5. Lecture de la solution** (`src/app/solution.tsx`) — barre de mouvements, nom d'étape, Précédent / Lecture / Suivant.
   *Fini quand* : un vrai cube mélangé, suivi pas à pas, finit résolu.
-- [ ] **6. Publication** — build EAS Android (APK) installable.
+- [ ] **6. Publication** — APK Android signée avec une vraie clé (aujourd'hui : clé de débogage).
   *Fini quand* : l'APK s'installe et le parcours complet fonctionne sans Expo Go.

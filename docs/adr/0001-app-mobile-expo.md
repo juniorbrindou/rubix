@@ -4,8 +4,8 @@ Date : 2026-11-21 · Statut : accepté
 
 ## Contexte
 
-L'utilisateur veut une application mobile. Il faut de la 3D fluide sur téléphone, et le serveur de développement
-n'a ni SDK Android ni Xcode.
+L'utilisateur veut une application mobile. Il faut de la 3D fluide sur téléphone. Le serveur de développement
+a un SDK Android (builds APK locaux) mais pas Xcode.
 
 ## Décision
 
@@ -15,8 +15,7 @@ Expo + React Native en TypeScript, 3D par three.js via `@react-three/fiber/nativ
 
 - Une seule base de code pour Android et iOS.
 - three.js est la bibliothèque 3D la plus documentée ; `@react-three/fiber` l'utilise telle quelle sur mobile.
-- Les builds EAS tournent dans le nuage : rien à installer sur le serveur. Expo Go permet d'essayer sur un vrai
-  téléphone en scannant un QR code.
+- L'APK Android se construit sur le serveur ; iOS passera par les builds EAS dans le nuage.
 - Le cœur (modèle, solveur) reste du TypeScript pur, réutilisable si un jour une version web s'ajoute.
 
 ## Écartés

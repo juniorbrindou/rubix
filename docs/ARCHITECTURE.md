@@ -6,7 +6,7 @@
 - **3D** : `three` rendu par `@react-three/fiber/native` sur `expo-gl`.
 - **État d'écran** : `zustand`.
 - **Tests** : Jest (`jest-expo`) ; le cœur pur se teste sans émulateur.
-- **Builds** : EAS (dans le nuage). Essai sur téléphone : Expo Go.
+- **Builds** : APK Android construite sur le serveur (Gradle) ; iOS par EAS plus tard.
 
 Les versions sont celles de `package.json`.
 
