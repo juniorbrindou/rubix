@@ -1,9 +1,9 @@
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View, type ScrollViewInstance } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FACES, FACE_COLOR_NAME, UNKNOWN, faceOfFacelet, pieceFacelets, type Face } from '@/cube';
+import { FACE_COLOR_NAME, faceOfFacelet, pieceFacelets } from '@/cube';
 import {
   PRESET_STAGES,
   changeLevel,
@@ -14,10 +14,10 @@ import {
   paint,
 } from '@/input/input';
 import { CubeView } from '@/scene/CubeView';
-import { STICKER_COLOR } from '@/scene/cubies';
 import { STAGE_LABEL, solve } from '@/solver';
-
-type Brush = Face | typeof UNKNOWN;
+import { ActionButton, CubeStage, Dock, QuietButton, ScreenHeader } from '@/ui/components';
+import { Palette, type Brush } from '@/ui/Palette';
+import { GUTTER, color, font, radius, space } from '@/ui/theme';
 
 const FILL_INTERVAL_MS = 30;
 
@@ -73,81 +73,95 @@ export default function InputScreen() {
   const counts = colorCounts(state);
   const moves = useMemo(() => (status.kind === 'valid' ? solve(state).length : 0), [status, state]);
 
-  const { message, tone, highlight, focus } = describe(status, state, level, moves);
+  const { message, tone, highlight, focus } = describe(status, state, level);
+
+  const go = () => router.push({ pathname: '/solution', params: { state } });
+  const sublabel =
+    status.kind === 'valid'
+      ? `${moves} mouvement${moves > 1 ? 's' : ''} jusqu’au cube résolu`
+      : status.kind === 'incomplete'
+        ? `Encore ${status.remaining} case${status.remaining > 1 ? 's' : ''} à colorier`
+        : 'Corrige d’abord l’erreur signalée';
 
   return (
-    <SafeAreaView style={styles.screen}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Montre-moi ton cube</Text>
-        <Text style={styles.subtitle}>Tiens-le jaune en haut, vert face à toi.</Text>
+    <SafeAreaView style={styles.screen} edges={['top', 'left', 'right']}>
+      <ScreenHeader
+        title="Montre-moi ton cube"
+        subtitle="Jaune en haut, vert face à toi."
+        aside={
+          <QuietButton
+            label="Tout effacer"
+            onPress={() => {
+              pending.current = [];
+              setState(emptyInput());
+              setLevel(0);
+              setHint(null);
+            }}
+          />
+        }
+      />
 
+      <Text style={styles.section}>Ce que tu as déjà fini</Text>
+      <StageRail level={level} onToggle={toggleStage} />
+
+      <CubeStage>
         <CubeView state={state} onFaceletPress={onFaceletPress} highlight={highlight} focus={focus} />
+      </CubeStage>
 
-        <View style={styles.palette}>
-          {[...FACES, UNKNOWN].map((c) => (
-            <Pressable
-              key={c}
-              onPress={() => setBrush(c as Brush)}
-              style={[styles.swatchWrap, brush === c && styles.swatchSelected]}
-              accessibilityLabel={c === UNKNOWN ? 'Gomme' : FACE_COLOR_NAME[c as Face]}
-            >
-              <View style={[styles.swatch, { backgroundColor: STICKER_COLOR[c] }, c === 'D' && styles.swatchWhite]}>
-                {c === UNKNOWN && <Text style={styles.eraser}>⌫</Text>}
-              </View>
-              <Text style={[styles.count, c !== UNKNOWN && counts[c as Face] > 9 && styles.countOver]}>
-                {c === UNKNOWN ? counts[UNKNOWN] : `${counts[c as Face]}/9`}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
+      <Text style={[styles.message, styles[hint ? 'neutral' : tone]]} numberOfLines={3}>
+        {hint ?? message}
+      </Text>
 
-        <Text style={[styles.message, styles[tone]]}>{hint ?? message}</Text>
-        {status.kind === 'valid' && (
-          <Pressable
-            onPress={() => router.push({ pathname: '/solution', params: { state } })}
-            style={({ pressed }) => [styles.solve, pressed && { opacity: 0.7 }]}
-          >
-            <Text style={styles.solveText}>Voir la solution</Text>
-          </Pressable>
-        )}
-
-        <Text style={styles.section}>Ce que tu as déjà fini</Text>
-        <View style={styles.stages}>
-          {PRESET_STAGES.map((stage, i) => {
-            const on = i < level;
-            return (
-              <Pressable key={stage} onPress={() => toggleStage(i)} style={[styles.stage, on && styles.stageOn]}>
-                <Text style={[styles.stageText, on && styles.stageTextOn]}>
-                  {on ? '✓ ' : ''}
-                  {STAGE_LABEL[stage]}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        <Pressable
-          onPress={() => {
-            pending.current = [];
-            setState(emptyInput());
-            setLevel(0);
-            setHint(null);
-          }}
-          style={styles.reset}
-        >
-          <Text style={styles.resetText}>Tout effacer</Text>
-        </Pressable>
-      </ScrollView>
+      <Dock>
+        <Palette brush={brush} onChange={setBrush} counts={counts} />
+        <ActionButton label="Voir la solution" sublabel={sublabel} variant="go" disabled={status.kind !== 'valid'} onPress={go} />
+      </Dock>
       <StatusBar style="dark" />
     </SafeAreaView>
   );
 }
 
-function describe(status: ReturnType<typeof inputStatus>, state: string, level: number, moves: number) {
+/**
+ * Les étapes de la méthode, dans l'ordre : cocher une étape coche les précédentes. Le rail défile seul pour
+ * garder la dernière étape cochée en vue.
+ */
+function StageRail({ level, onToggle }: { level: number; onToggle: (index: number) => void }) {
+  const rail = useRef<ScrollViewInstance>(null);
+  const x = useRef<number[]>([]);
+  useEffect(() => {
+    const target = x.current[Math.max(0, level - 1)];
+    if (target !== undefined) rail.current?.scrollTo({ x: Math.max(0, target - 40), animated: true });
+  }, [level]);
+  return (
+    <ScrollView ref={rail} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.rail} style={styles.railBox}>
+      {PRESET_STAGES.map((stage, i) => {
+        const on = i < level;
+        return (
+          <Pressable
+            key={stage}
+            onPress={() => onToggle(i)}
+            onLayout={(e) => (x.current[i] = e.nativeEvent.layout.x)}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: on }}
+            accessibilityLabel={`Étape ${i + 1} : ${STAGE_LABEL[stage]}`}
+            style={({ pressed }) => [styles.stage, on && styles.stageOn, pressed && { opacity: 0.8 }]}
+          >
+            <View style={[styles.stageMark, on && styles.stageMarkOn]}>
+              <Text style={[styles.stageNum, on && styles.stageNumOn]}>{on ? '✓' : i + 1}</Text>
+            </View>
+            <Text style={[styles.stageText, on && styles.stageTextOn]}>{STAGE_LABEL[stage]}</Text>
+          </Pressable>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
+function describe(status: ReturnType<typeof inputStatus>, state: string, level: number) {
   switch (status.kind) {
     case 'incomplete':
       return {
-        message: `Choisis une couleur, puis touche les cases. Encore ${status.remaining} case${status.remaining > 1 ? 's' : ''} à colorier.`,
+        message: 'Choisis une couleur, puis touche les cases grises. Fais tourner le cube du doigt.',
         tone: 'neutral' as const,
         highlight: [] as number[],
         focus: null,
@@ -173,7 +187,7 @@ function describe(status: ReturnType<typeof inputStatus>, state: string, level: 
     }
     case 'valid':
       return {
-        message: `Ton cube est bon. Il se résout en ${moves} mouvements.`,
+        message: 'Ton cube est bon : la solution t’attend.',
         tone: 'ok' as const,
         highlight: [] as number[],
         focus: null,
@@ -182,30 +196,55 @@ function describe(status: ReturnType<typeof inputStatus>, state: string, level: 
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#FAFAF7' },
-  content: { paddingHorizontal: 16, paddingVertical: 12 },
-  title: { fontSize: 24, fontWeight: '700', textAlign: 'center' },
-  subtitle: { marginTop: 2, fontSize: 15, textAlign: 'center', color: '#555' },
-  palette: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },
-  swatchWrap: { alignItems: 'center', padding: 3, borderRadius: 12, borderWidth: 2, borderColor: 'transparent' },
-  swatchSelected: { borderColor: '#111' },
-  swatch: { width: 36, height: 36, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
-  swatchWhite: { borderWidth: 1, borderColor: '#CCC' },
-  eraser: { fontSize: 18, color: '#FFF' },
-  count: { marginTop: 2, fontSize: 12, color: '#555', fontVariant: ['tabular-nums'] },
-  countOver: { color: '#C62828', fontWeight: '700' },
-  message: { marginTop: 10, fontSize: 15, textAlign: 'center', minHeight: 40 },
-  neutral: { color: '#444' },
-  error: { color: '#C62828' },
-  ok: { color: '#1B7F3B', fontWeight: '600' },
-  section: { marginTop: 14, fontSize: 15, fontWeight: '600', color: '#222' },
-  stages: { marginTop: 8, flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  stage: { paddingVertical: 10, paddingHorizontal: 14, borderRadius: 20, borderWidth: 1, borderColor: '#CCC', backgroundColor: '#FFF' },
-  stageOn: { backgroundColor: '#111', borderColor: '#111' },
-  stageText: { fontSize: 14, color: '#222' },
-  stageTextOn: { color: '#FFF' },
-  solve: { marginTop: 8, paddingVertical: 14, borderRadius: 12, backgroundColor: '#111', alignItems: 'center' },
-  solveText: { fontSize: 17, color: '#FFF', fontWeight: '600' },
-  reset: { marginTop: 18, alignSelf: 'center', paddingVertical: 10, paddingHorizontal: 18 },
-  resetText: { fontSize: 15, color: '#666', textDecorationLine: 'underline' },
+  screen: { flex: 1, backgroundColor: color.mat },
+  section: {
+    marginTop: space.md,
+    paddingHorizontal: GUTTER,
+    fontFamily: font.displayMedium,
+    fontSize: 11,
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    color: color.inkMute,
+  },
+  railBox: { flexGrow: 0 },
+  rail: { gap: space.sm, paddingHorizontal: GUTTER, paddingTop: space.sm, paddingBottom: space.xs },
+  stage: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    paddingVertical: 7,
+    paddingLeft: 7,
+    paddingRight: space.md,
+    borderRadius: radius.chip,
+    borderWidth: 1.5,
+    borderColor: color.line,
+    backgroundColor: color.card,
+  },
+  stageOn: { backgroundColor: color.plate, borderColor: color.plate },
+  stageMark: {
+    width: 22,
+    height: 22,
+    borderRadius: radius.sticker,
+    borderWidth: 1.5,
+    borderColor: color.line,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stageMarkOn: { backgroundColor: color.go, borderColor: color.go },
+  stageNum: { fontFamily: font.displayMedium, fontSize: 11, color: color.inkMute },
+  stageNumOn: { color: color.ink },
+  stageText: { fontFamily: font.bodyBold, fontSize: 14, color: color.ink },
+  stageTextOn: { color: color.onPlate },
+  message: {
+    minHeight: 44,
+    paddingHorizontal: GUTTER,
+    paddingVertical: space.xs,
+    fontFamily: font.body,
+    fontSize: 15,
+    lineHeight: 20,
+    textAlign: 'center',
+  },
+  neutral: { color: color.inkSoft },
+  error: { color: color.error, fontFamily: font.bodyBold },
+  ok: { color: color.ok, fontFamily: font.bodyBold },
 });

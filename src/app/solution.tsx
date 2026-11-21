@@ -1,12 +1,14 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, type ScrollViewInstance } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, type ScrollViewInstance } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { applyMove, invertMove, validate, type Move } from '@/cube';
 import { CubeView } from '@/scene/CubeView';
 import { STAGES, STAGE_LABEL, solve, type SolutionStep } from '@/solver';
+import { ActionButton, CubeStage, Dock, QuietButton, ScreenHeader } from '@/ui/components';
 import { describeMove } from '@/ui/moveText';
+import { GUTTER, color, font, radius, space } from '@/ui/theme';
 
 const MOVE_MS = 450;
 const PAUSE_MS = 250;
@@ -21,8 +23,10 @@ export default function SolutionScreen() {
 function Invalid() {
   return (
     <SafeAreaView style={styles.screen}>
-      <Text style={styles.done}>Ce cube n’est pas valide.</Text>
-      <Button label="Revenir à la saisie" onPress={() => router.replace('/')} />
+      <ScreenHeader eyebrow="Solution" title="Ce cube n’est pas valide." subtitle="Reviens à la saisie pour vérifier ses couleurs." />
+      <View style={styles.invalidAction}>
+        <ActionButton label="Revenir à la saisie" variant="go" onPress={() => router.replace('/')} />
+      </View>
     </SafeAreaView>
   );
 }
@@ -75,18 +79,37 @@ function Player({ start }: { start: string }) {
     if (x !== undefined) bar.current?.scrollTo({ x: Math.max(0, x - 120), animated: true });
   }, [index]);
 
-  return (
-    <SafeAreaView style={styles.screen}>
-      <ScrollView contentContainerStyle={styles.content}>
-        {current && (
-          <>
-            <Text style={styles.stage}>
-              Étape {STAGES.indexOf(current.stage) + 1}/7 · {STAGE_LABEL[current.stage]}
-            </Text>
-            <Text style={styles.label}>{finished ? ' ' : current.label}</Text>
-          </>
-        )}
+  const shownStage = finished || !current ? 'solved' : current.stage;
+  const stageNumber = STAGES.indexOf(shownStage) + 1;
+  const move = finished ? null : steps[index].move;
 
+  return (
+    <SafeAreaView style={styles.screen} edges={['top', 'left', 'right']}>
+      <ScreenHeader
+        top={
+          <View style={styles.topRow}>
+            <QuietButton label="‹ Modifier mon cube" onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} />
+            <Text style={styles.counter} accessibilityLabel={`Mouvement ${Math.min(index + 1, total)} sur ${total}`}>
+              {Math.min(index + 1, total)}
+              <Text style={styles.counterTotal}>/{total}</Text>
+            </Text>
+          </View>
+        }
+        eyebrow={`Étape ${stageNumber} sur ${STAGES.length}`}
+        title={STAGE_LABEL[shownStage]}
+        subtitle={finished || !current ? undefined : current.label}
+      />
+
+      <View style={styles.stages} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+        {STAGES.map((s, i) => (
+          <View
+            key={s}
+            style={[styles.segment, i < stageNumber - 1 && styles.segmentDone, i === stageNumber - 1 && styles.segmentCurrent]}
+          />
+        ))}
+      </View>
+
+      <View style={styles.barPlate}>
         <ScrollView key={current?.stage} ref={bar} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.bar}>
           {stageSteps.map((s) => (
             <View
@@ -95,86 +118,98 @@ function Player({ start }: { start: string }) {
                 chipX.current[s.i] = e.nativeEvent.layout.x;
                 if (s.i === index) bar.current?.scrollTo({ x: Math.max(0, e.nativeEvent.layout.x - 120), animated: false });
               }}
-              style={[styles.chip, s.i < index && styles.chipDone, s.i === index && styles.chipCurrent]}
+              style={[styles.chip, s.i === index && styles.chipCurrent]}
             >
-              <Text style={[styles.chipText, s.i === index && styles.chipTextCurrent]}>{s.move}</Text>
+              <Text style={[styles.chipText, s.i < index && styles.chipTextDone, s.i === index && styles.chipTextCurrent]}>{s.move}</Text>
             </View>
           ))}
         </ScrollView>
+      </View>
 
+      <CubeStage>
         <CubeView state={state} animation={animation} durationMs={MOVE_MS} />
+      </CubeStage>
 
-        <Text style={finished ? styles.done : styles.instruction}>
-          {total === 0
-            ? 'Ton cube est déjà résolu.'
-            : finished
-              ? 'Bravo, ton cube est résolu !'
-              : `${steps[index].move} — ${describeMove(steps[index].move)}`}
-        </Text>
-        <Text style={styles.progress}>
-          Mouvement {Math.min(index + 1, total)} sur {total}
-        </Text>
+      <View style={styles.instruction}>
+        {move ? (
+          <>
+            <View style={styles.moveTile}>
+              <Text style={styles.moveTileText} numberOfLines={1} adjustsFontSizeToFit>
+                {move}
+              </Text>
+            </View>
+            <Text style={styles.instructionText}>{describeMove(move)}</Text>
+          </>
+        ) : (
+          <Text style={styles.done}>{total === 0 ? 'Ton cube est déjà résolu.' : 'Bravo, ton cube est résolu !'}</Text>
+        )}
+      </View>
 
+      <Dock>
         <View style={styles.controls}>
-          <Button label="Précédent" onPress={previous} disabled={index === 0 || !!anim} />
-          <Button
+          <ActionButton label="Précédent" onPress={previous} disabled={index === 0 || !!anim} style={styles.side} />
+          <ActionButton
             label={playing ? 'Pause' : 'Lecture'}
             onPress={() => setPlaying((p) => !p)}
             disabled={finished}
-            primary
+            variant="go"
+            style={styles.main}
           />
-          <Button
+          <ActionButton
             label="Suivant"
             onPress={() => {
               setPlaying(false);
               next();
             }}
             disabled={finished || !!anim}
+            style={styles.side}
           />
         </View>
-
-        <Pressable onPress={() => router.back()} style={styles.back}>
-          <Text style={styles.backText}>Modifier mon cube</Text>
-        </Pressable>
-      </ScrollView>
+      </Dock>
       <StatusBar style="dark" />
     </SafeAreaView>
   );
 }
 
-function Button({ label, onPress, disabled, primary }: { label: string; onPress: () => void; disabled?: boolean; primary?: boolean }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled}
-      style={({ pressed }) => [styles.button, primary && styles.primary, pressed && styles.pressed, disabled && styles.disabled]}
-    >
-      <Text style={[styles.buttonText, primary && styles.primaryText]}>{label}</Text>
-    </Pressable>
-  );
-}
-
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#FAFAF7' },
-  content: { paddingHorizontal: 16, paddingVertical: 12 },
-  stage: { fontSize: 20, fontWeight: '700', textAlign: 'center' },
-  label: { marginTop: 2, fontSize: 15, textAlign: 'center', color: '#555' },
-  bar: { gap: 6, paddingVertical: 10, paddingHorizontal: 2 },
-  chip: { minWidth: 44, paddingVertical: 8, paddingHorizontal: 10, borderRadius: 10, borderWidth: 1, borderColor: '#DDD', backgroundColor: '#FFF', alignItems: 'center' },
-  chipDone: { opacity: 0.4 },
-  chipCurrent: { backgroundColor: '#111', borderColor: '#111' },
-  chipText: { fontSize: 16, color: '#222', fontVariant: ['tabular-nums'] },
-  chipTextCurrent: { color: '#FFF', fontWeight: '700' },
-  instruction: { marginTop: 6, fontSize: 16, textAlign: 'center', color: '#222', minHeight: 44 },
-  done: { marginTop: 6, fontSize: 18, textAlign: 'center', color: '#1B7F3B', fontWeight: '700', minHeight: 44 },
-  progress: { marginTop: 4, fontSize: 13, textAlign: 'center', color: '#777' },
-  controls: { marginTop: 12, flexDirection: 'row', gap: 8 },
-  button: { flex: 1, paddingVertical: 14, borderRadius: 12, borderWidth: 1, borderColor: '#DDD', backgroundColor: '#FFF', alignItems: 'center' },
-  primary: { backgroundColor: '#111', borderColor: '#111' },
-  pressed: { opacity: 0.7 },
-  disabled: { opacity: 0.35 },
-  buttonText: { fontSize: 16, color: '#111' },
-  primaryText: { color: '#FFF', fontWeight: '600' },
-  back: { marginTop: 18, alignSelf: 'center', paddingVertical: 10, paddingHorizontal: 18 },
-  backText: { fontSize: 15, color: '#666', textDecorationLine: 'underline' },
+  screen: { flex: 1, backgroundColor: color.mat },
+  invalidAction: { padding: GUTTER },
+  topRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: space.sm, marginLeft: -space.xs },
+  counter: { fontFamily: font.display, fontSize: 16, color: color.ink, fontVariant: ['tabular-nums'] },
+  counterTotal: { fontFamily: font.displayMedium, fontSize: 12, color: color.inkMute },
+  stages: { flexDirection: 'row', gap: 4, paddingHorizontal: GUTTER, marginTop: space.md },
+  segment: { flex: 1, height: 6, borderRadius: 3, backgroundColor: color.line },
+  segmentDone: { backgroundColor: color.plate },
+  segmentCurrent: { backgroundColor: color.go, borderWidth: 1.5, borderColor: color.plate },
+  barPlate: { marginTop: space.md, marginHorizontal: GUTTER, borderRadius: radius.plate, backgroundColor: color.plate, overflow: 'hidden' },
+  bar: { gap: 4, padding: 6 },
+  chip: { minWidth: 40, paddingVertical: 7, paddingHorizontal: 8, borderRadius: radius.chip, alignItems: 'center' },
+  chipCurrent: { backgroundColor: color.go },
+  chipText: { fontFamily: font.display, fontSize: 15, color: color.onPlate },
+  chipTextDone: { color: color.onPlateSoft, opacity: 0.55 },
+  chipTextCurrent: { color: color.ink },
+  instruction: {
+    minHeight: 64,
+    marginHorizontal: GUTTER,
+    marginBottom: space.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+  },
+  moveTile: {
+    width: 60,
+    height: 60,
+    borderRadius: radius.chip + 2,
+    borderWidth: 3,
+    borderColor: color.plate,
+    backgroundColor: color.go,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  moveTileText: { fontFamily: font.display, fontSize: 22, color: color.ink },
+  instructionText: { flex: 1, fontFamily: font.body, fontSize: 15, lineHeight: 20, color: color.ink },
+  done: { flex: 1, fontFamily: font.display, fontSize: 17, lineHeight: 24, textAlign: 'center', color: color.ok },
+  controls: { flexDirection: 'row', gap: space.sm },
+  side: { flex: 1, paddingHorizontal: space.xs },
+  main: { flex: 1.3 },
 });

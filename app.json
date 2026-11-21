@@ -34,6 +34,19 @@
             "extraProguardRules": "# R8 (actif en SDK 58) retire le constructeur de GLView et GLContext.flush, appelés par réflexion/JNI : la 3D plante au démarrage. https://github.com/expo/expo/issues/51948\n-keep class expo.modules.gl.** { *; }"
           }
         }
+      ],
+      [
+        "expo-font",
+        {
+          "android": {
+            "fonts": [
+              "./node_modules/@expo-google-fonts/unbounded/700Bold/Unbounded_700Bold.ttf",
+              "./node_modules/@expo-google-fonts/unbounded/500Medium/Unbounded_500Medium.ttf",
+              "./node_modules/@expo-google-fonts/atkinson-hyperlegible-next/400Regular/AtkinsonHyperlegibleNext_400Regular.ttf",
+              "./node_modules/@expo-google-fonts/atkinson-hyperlegible-next/700Bold/AtkinsonHyperlegibleNext_700Bold.ttf"
+            ]
+          }
+        }
       ]
     ],
     "scheme": "rubix",

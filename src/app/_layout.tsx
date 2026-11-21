@@ -2,8 +2,11 @@
 import { clearError, crashedLaunch, lastError, mark, onError, type LaunchLog } from '@/diagnostics';
 import { Stack, type ErrorBoundaryProps } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ActionButton } from '@/ui/components';
+import { useAppFonts } from '@/ui/fonts';
+import { GUTTER, color, font, radius, space } from '@/ui/theme';
 
 /**
  * En version installée (APK), une erreur non rattrapée ferme l'app sans rien dire. On l'affiche à la place, ainsi
@@ -12,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function RootLayout() {
   const [error, setError] = useState<Error | null>(lastError);
   const [crash, setCrash] = useState<LaunchLog | null>(crashedLaunch);
+  useAppFonts();
   useEffect(() => {
     mark('écran racine affiché');
     return onError(setError);
@@ -55,28 +59,37 @@ function Report({ title, lines, onContinue }: { title: string; lines: string[]; 
   return (
     <SafeAreaView style={styles.screen}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>{title}</Text>
+        <View style={styles.badge}>
+          <View style={styles.badgeSticker} />
+          <Text style={styles.eyebrow}>Rapport d’erreur</Text>
+        </View>
+        <Text style={styles.title} accessibilityRole="header">
+          {title}
+        </Text>
         <Text style={styles.help}>Fais une capture de cet écran et envoie-la : elle dit exactement ce qui s’est passé.</Text>
-        {lines.map((l, i) => (
-          <Text key={i} selectable style={i === 0 ? styles.first : styles.line}>
-            {l}
-          </Text>
-        ))}
-        <Pressable onPress={onContinue} style={styles.button}>
-          <Text style={styles.buttonText}>Continuer</Text>
-        </Pressable>
+        <View style={styles.log}>
+          {lines.map((l, i) => (
+            <Text key={i} selectable style={i === 0 ? styles.first : styles.line}>
+              {l}
+            </Text>
+          ))}
+        </View>
+        <ActionButton label="Continuer" variant="go" onPress={onContinue} style={styles.button} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#FFF' },
-  content: { padding: 16 },
-  title: { fontSize: 20, fontWeight: '700' },
-  help: { marginTop: 6, marginBottom: 12, fontSize: 15, color: '#444' },
-  first: { fontSize: 15, color: '#C62828', fontWeight: '600', marginBottom: 6 },
-  line: { fontSize: 12, color: '#333', fontFamily: 'monospace' },
-  button: { marginTop: 18, paddingVertical: 14, borderRadius: 12, backgroundColor: '#111', alignItems: 'center' },
-  buttonText: { color: '#FFF', fontSize: 16 },
+  screen: { flex: 1, backgroundColor: color.mat },
+  content: { padding: GUTTER },
+  badge: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  badgeSticker: { width: 14, height: 14, borderRadius: 4, backgroundColor: color.sticker.L, borderWidth: 2, borderColor: color.plate },
+  eyebrow: { fontFamily: font.displayMedium, fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', color: color.inkMute },
+  title: { marginTop: space.sm, fontFamily: font.display, fontSize: 20, lineHeight: 27, color: color.ink, letterSpacing: -0.4 },
+  help: { marginTop: space.sm, marginBottom: space.lg, fontFamily: font.body, fontSize: 15, lineHeight: 21, color: color.inkSoft },
+  log: { padding: space.md, borderRadius: radius.plate, backgroundColor: color.plate, gap: 2 },
+  first: { marginBottom: space.sm, fontFamily: font.mono, fontSize: 14, lineHeight: 19, color: '#FF8A80' },
+  line: { fontFamily: font.mono, fontSize: 12, lineHeight: 17, color: color.onPlateSoft },
+  button: { marginTop: space.lg },
 });
