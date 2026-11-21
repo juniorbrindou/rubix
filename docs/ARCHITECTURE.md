@@ -33,6 +33,17 @@ cube  ←  solver  ←  input  ←  app
 (`app` = `src/app`.) `src/cube` ne dépend de rien. `src/solver` ne dépend que de `src/cube`. Seuls `src/scene`,
 `src/ui` et `src/app` importent React ou three.js. Une flèche dans l'autre sens est une erreur de conception, pas un raccourci.
 
+## Scène 3D (`src/scene`)
+
+- `CubeView` affiche un `CubeState`, rien d'autre : la vérité reste l'état du modèle.
+- `fiber.native.ts` / `fiber.ts` : Metro prend `@react-three/fiber/native` (expo-gl) sur mobile et
+  `@react-three/fiber` sur le web. Importer `Canvas`, `useFrame`, `useThree` depuis `./fiber`, jamais directement.
+- Les gestes passent par un `PanResponder` posé sur la vue qui entoure le canevas (il capture le toucher avant
+  le canevas) : glisser fait tourner le cube, un toucher bref lance un rayon. Un toucher dans le joint noir
+  entre deux cases désigne la case de la face du corps touchée (`faceletOfHit`).
+- Le sens de rotation est testé : `src/scene/__tests__/cubies.test.ts` vérifie, pour les 18 mouvements, que la
+  couche tournée de l'angle `moveTurn` tombe exactement sur l'état `applyMove`.
+
 ## Animation d'un mouvement
 
 La scène tient 26 pièces (sans le centre caché). Animer `R` : regrouper les 9 pièces de la couche R dans un

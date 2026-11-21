@@ -51,6 +51,16 @@ export const MOVE_PERMUTATION: Readonly<Record<Move, Int8Array>> = Object.fromEn
   MOVES.map((m) => [m, buildPermutation(m)]),
 ) as Record<Move, Int8Array>;
 
+/**
+ * Rotation géométrique d'un mouvement, pour l'animer : axe (0 = x, 1 = y, 2 = z), couche tournée (+1 ou -1 sur
+ * cet axe), angle en radians dans le sens trigonométrique autour de l'axe positif (le sens de three.js), entre -π/2 et π.
+ */
+export function moveTurn(move: Move): { axis: Axis; layer: 1 | -1; angle: number } {
+  const { axis, layer, ccwPerClockwise } = FACE_TURN[moveFace(move)];
+  const quarters = (ccwPerClockwise * CLOCKWISE_QUARTERS[move.slice(1) as MoveSuffix]) % 4;
+  return { axis, layer, angle: (quarters === 3 ? -1 : quarters) * (Math.PI / 2) };
+}
+
 export function applyMove(state: CubeState, move: Move): CubeState {
   const source = MOVE_PERMUTATION[move];
   let out = '';

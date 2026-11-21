@@ -18,6 +18,8 @@ Avancement et prochaine tâche : [`docs/FEUILLE-DE-ROUTE.md`](docs/FEUILLE-DE-RO
 - **Langues** : identifiants du code en anglais, textes affichés et documentation en français. Le glossaire
   [`CONTEXT.md`](CONTEXT.md) donne la correspondance ; un nouveau terme métier y entre avant d'entrer dans le code.
 - **Petit écran** : chaque écran se vérifie sur un téléphone de 360 dp de large, sans défilement parasite.
+  Sans téléphone, la version web s'ouvre dans le Chromium du serveur : `scripts/verifier-ecran-web.cjs`
+  (capture, défilement, erreurs console). La 3D y tourne réellement ; seule la vitesse diffère du téléphone.
 - **Commits** : message en français, sans trailer `Co-Authored-By` ni mention d'assistant.
 - **Livrer** : un changement est vert quand `npm test`, `npm run typecheck` et `npx expo-doctor` passent ; alors
   commit puis push sur `master`.
