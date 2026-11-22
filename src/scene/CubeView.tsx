@@ -1,5 +1,5 @@
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { PanResponder, Pressable, StyleSheet, Text, View, type GestureResponderEvent } from 'react-native';
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
@@ -35,6 +35,18 @@ export interface CubeViewProps {
   focus?: number | null;
   /** Mouvement à montrer par une flèche sur sa face (aide). */
   hint?: Move | null;
+  /** Le cube tourne sur lui-même tant que c'est vrai ; il revient ensuite à la vue de départ. */
+  spin?: boolean;
+  /** Faux : aucun geste n'est pris en compte (démonstration). */
+  interactive?: boolean;
+  /** Affiche le bouton ⟲ qui ramène la vue de départ. */
+  showRecenter?: boolean;
+  ref?: React.Ref<CubeViewHandle>;
+}
+
+export interface CubeViewHandle {
+  /** Position à l'écran (dans la vue du cube) du centre d'une case, ou `null` avant la première image. */
+  project: (facelet: number) => { x: number; y: number } | null;
 }
 
 // --- Point de vue : orbite (lacet autour de la verticale, tangage borné), jamais de roulis ---
@@ -60,6 +72,8 @@ interface ViewState {
   yaw: number;
   pitch: number;
   target: { yaw: number; pitch: number } | null;
+  /** Vitesse de rotation continue (rad/s), 0 au repos. */
+  spin: number;
 }
 
 // --- Géométries et matériaux partagés ---
@@ -250,6 +264,7 @@ function Cube({
     if (frames.current === 60) markHealthy();
 
     const view = viewRef.current;
+    if (view.spin) view.yaw += view.spin * delta;
     if (view.target) {
       const k = Math.min(1, delta * 7);
       const dYaw = wrapAngle(view.target.yaw - view.yaw);
@@ -315,10 +330,31 @@ export function CubeView({
   highlight = NONE,
   focus = null,
   hint = null,
+  spin = false,
+  interactive = true,
+  showRecenter = true,
+  ref,
 }: CubeViewProps) {
   const rootRef = useRef<THREE.Group>(null);
   const handleRef = useRef<SceneHandle | null>(null);
-  const viewRef = useRef<ViewState>({ ...VIEW, target: null });
+  const viewRef = useRef<ViewState>({ ...VIEW, target: null, spin: 0 });
+  useImperativeHandle(ref, () => ({
+    project: (facelet) => {
+      const handle = handleRef.current;
+      if (!handle) return null;
+      const { position, normal } = FACELET_GEOMETRY[facelet];
+      const p = handle.root.localToWorld(new THREE.Vector3(...position).addScaledVector(new THREE.Vector3(...normal), 0.5));
+      p.project(handle.camera);
+      return { x: ((p.x + 1) / 2) * size.current.width, y: ((1 - p.y) / 2) * size.current.height };
+    },
+  }));
+  useEffect(() => {
+    viewRef.current.spin = spin ? 1.8 : 0;
+    if (spin) viewRef.current.target = null;
+    else aimAt({ ...VIEW });
+    handleRef.current?.invalidate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spin]);
   const size = useRef({ width: 1, height: 1 });
   const gesture = useRef({
     last: { x: 0, y: 0, count: 0 },
@@ -463,7 +499,7 @@ export function CubeView({
       style={styles.container}
       onLayout={(e) => (size.current = { width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height })}
     >
-      <View style={styles.fill} {...responder.panHandlers}>
+      <View style={styles.fill} {...(interactive ? responder.panHandlers : {})}>
         <Canvas
           key={canvasKey}
           flat
@@ -486,6 +522,7 @@ export function CubeView({
           />
         </Canvas>
       </View>
+      {showRecenter && (
       <Pressable
         onPress={() => aimAt({ ...VIEW })}
         style={({ pressed }) => [styles.recenter, pressed && { opacity: 0.6 }]}
@@ -494,6 +531,7 @@ export function CubeView({
       >
         <Text style={styles.recenterText}>⟲</Text>
       </Pressable>
+      )}
     </View>
   );
 }

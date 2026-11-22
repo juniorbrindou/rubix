@@ -2,6 +2,9 @@
 
 ## [À venir]
 
+- Bienvenue au premier lancement : le vrai cube reçoit ses dernières couleurs du doigt, puis se résout en
+  tournant sous vos yeux après « Résoudre ».
+
 ## [0.7.2] — 2026-11-22
 
 - Onglets « Mon cube | Apprendre » en haut des deux écrans ; « Effacer » devient une corbeille légendée qui

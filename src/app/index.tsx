@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View, type ScrollViewInstance } from 'react-native';
@@ -14,6 +14,7 @@ import {
   paint,
   paintRefusal,
 } from '@/input/input';
+import { welcomeSeen } from '@/onboarding';
 import { CubeView } from '@/scene/CubeView';
 import { STAGE_LABEL, solve } from '@/solver';
 import { ActionButton, CubeStage, Dock, ScreenHeader } from '@/ui/components';
@@ -23,7 +24,12 @@ import { GUTTER, color, font, radius, space } from '@/ui/theme';
 
 const FILL_INTERVAL_MS = 30;
 
-export default function InputScreen() {
+/** Au tout premier lancement, la présentation passe avant la saisie. */
+export default function Home() {
+  return welcomeSeen() ? <InputScreen /> : <Redirect href="/bienvenue" />;
+}
+
+function InputScreen() {
   const [state, setState] = useState(emptyInput);
   const [level, setLevel] = useState(0);
   const [brush, setBrush] = useState<Brush>('U');

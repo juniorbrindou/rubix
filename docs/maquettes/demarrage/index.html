@@ -1,0 +1,143 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=block" rel="stylesheet">
+<style>
+:root{--mat:#E3E8EE;--ink:#111;--soft:#465061;--mute:#6B7586;--go:#FFD500;--pink:#FF2D95;--plate:#111;--raised:#262B33}
+*{box-sizing:border-box;margin:0}
+body{width:375px;height:812px;overflow:hidden;font-family:Inter;background:var(--mat);color:var(--ink);position:relative}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;transition:transform .6s cubic-bezier(.65,0,.35,1),opacity .6s}
+.splash{background:var(--plate);color:#fff;align-items:center;justify-content:center;z-index:5}
+.splash.out{transform:translateY(-100%)}
+.brand{margin-top:22px;text-align:center;opacity:0;transform:translateY(14px);transition:all .6s .1s}
+.brand.on{opacity:1;transform:none}
+.brand h1{font-weight:800;font-size:30px;letter-spacing:-.5px}
+.brand p{margin-top:6px;color:#9AA4B2;font-size:15px}
+.onb{transform:translateX(100%)}
+.onb.on{transform:none}.onb.gone{transform:translateX(-100%)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:52px 20px 0}
+.dots{display:flex;gap:6px}.dots i{width:8px;height:8px;border-radius:4px;background:#C5CDD8;transition:all .3s}.dots i.on{width:22px;background:var(--ink)}
+.skip{font-weight:600;font-size:14px;color:var(--soft)}
+.stage{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
+.copy{padding:0 24px}
+.copy .k{font-weight:600;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--mute)}
+.copy h2{margin-top:6px;font-weight:800;font-size:26px;line-height:31px;letter-spacing:-.4px}
+.copy p{margin-top:8px;font-size:16px;line-height:22px;color:var(--soft)}
+.dock{margin-top:22px;background:var(--plate);border-radius:22px 22px 0 0;padding:16px 16px 30px}
+.btn{height:54px;border-radius:16px;background:var(--go);border:2px solid var(--plate);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:17px}
+.btn.pulse{animation:pulse 1s ease-in-out 2}
+@keyframes pulse{50%{transform:scale(1.04);box-shadow:0 0 0 6px rgba(255,213,0,.35)}}
+svg polygon{transition:fill .35s ease}
+.pop{animation:pop .35s ease}
+@keyframes pop{50%{transform:scale(1.25)}}
+.finger{position:absolute;width:30px;height:62px;border-radius:15px;background:#F4C9A8;border:3px solid #111;transform-origin:50% 0;opacity:0;transition:left .45s cubic-bezier(.4,0,.2,1),top .45s cubic-bezier(.4,0,.2,1),opacity .3s;z-index:3;rotate:-25deg}
+.finger::before{content:"";position:absolute;top:4px;left:5px;width:14px;height:12px;border-radius:6px;background:#FBE3D2}
+.ripple{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;border:3px solid var(--pink);opacity:0;z-index:2}
+.ripple.go{animation:rip .55s ease-out}
+@keyframes rip{0%{opacity:1;transform:scale(.4)}100%{opacity:0;transform:scale(2.6)}}
+.palette{position:absolute;bottom:2px;left:0;right:0;display:flex;justify-content:center;gap:10px}
+.palette span{width:30px;height:30px;border-radius:8px;border:2px solid transparent;transition:all .25s}
+.palette span.sel{border-color:#111;transform:translateY(-4px)}
+.bar{position:absolute;top:8px;left:24px;right:24px;background:var(--plate);border-radius:14px;padding:10px 12px;display:flex;gap:14px;font-weight:800;font-size:17px;color:#fff}
+.bar span{padding:0 7px;border-radius:7px;transition:all .25s}.bar span.cur{background:var(--go);color:#111}.bar span.done{opacity:.35}
+.help{position:absolute;bottom:6px;right:24px;background:var(--go);border:2px solid #111;border-radius:14px;padding:9px 16px;font-weight:600;font-size:15px}
+.help.pulse{animation:pulse 1s ease-in-out 2}
+.arrow{fill:none;stroke:var(--pink);stroke-width:7;stroke-linecap:round;stroke-dasharray:260;stroke-dashoffset:260;transition:stroke-dashoffset 1s ease}
+.arrow.on{stroke-dashoffset:0}
+.arrowhead{fill:var(--pink);opacity:0;transition:opacity .2s .9s}.arrowhead.on{opacity:1}
+</style></head><body>
+
+<section class="screen splash" id="splash">
+  <div style="position:relative"><svg id="c0" width="150" height="150" viewBox="0 0 200 200"></svg>
+    <div class="finger" id="f0"></div><div class="ripple" id="r0"></div></div>
+  <div class="brand" id="brand"><h1>Rubix Coach</h1><p>Le coach de votre Rubik’s Cube</p></div>
+</section>
+
+<section class="screen onb" id="s1">
+  <div class="top"><div class="dots"><i class="on"></i><i></i><i></i></div><span class="skip">Passer</span></div>
+  <div class="stage"><div style="position:relative"><svg id="c1" width="250" height="250" viewBox="0 0 200 200"></svg>
+    <div class="finger" id="f1"></div><div class="ripple" id="r1"></div></div>
+    <div class="palette" id="pal"></div></div>
+  <div class="copy"><div class="k">1 · Recopiez</div><h2>Recopiez les couleurs de votre cube</h2><p>Touchez une case, choisissez sa couleur.</p></div>
+  <div class="dock"><div class="btn">Suivant</div></div>
+</section>
+
+<section class="screen onb" id="s2">
+  <div class="top"><div class="dots"><i></i><i class="on"></i><i></i></div><span class="skip">Passer</span></div>
+  <div class="stage"><div class="bar" id="bar"><span>R</span><span>U</span><span>R'</span><span>U'</span></div>
+    <svg id="c2" width="250" height="250" viewBox="0 0 200 200" style="margin-top:40px"></svg></div>
+  <div class="copy"><div class="k">2 · Suivez</div><h2>Suivez la solution, mouvement par mouvement</h2><p>Chaque geste est animé et expliqué.</p></div>
+  <div class="dock"><div class="btn">Suivant</div></div>
+</section>
+
+<section class="screen onb" id="s3">
+  <div class="top"><div class="dots"><i></i><i></i><i class="on"></i></div><span class="skip">Passer</span></div>
+  <div class="stage"><svg id="c3" width="250" height="250" viewBox="0 0 200 200"></svg><div class="help" id="help">Aide</div></div>
+  <div class="copy"><div class="k">3 · Apprenez</div><h2>Ou apprenez à le résoudre vous-même</h2><p>Bloqué ? L’aide montre le coup suivant.</p></div>
+  <div class="dock"><div class="btn" id="start">Commencer</div></div>
+</section>
+
+<script>
+const Y='#FFD500',G='#00A651',O='#FF6A00',W='#FFFFFF',R='#D62828',B='#0051BA',GR='#9A9A9A';
+const C30=Math.cos(Math.PI/6), S=30, OX=100, OY=100, GAP=.09;
+const P=(x,y,z)=>[OX+(x-z)*C30*S, OY+(x+z)*.5*S-y*S];
+const pts=a=>a.map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' ');
+function cube(id, color){ // color(face,i,j) -> couleur
+  const svg=document.getElementById(id); let h='';
+  h+=`<polygon points="${pts([P(0,3,0),P(3,3,0),P(3,3,3),P(0,3,3)])}" fill="#111" stroke="#111" stroke-width="6" stroke-linejoin="round"/>`;
+  h+=`<polygon points="${pts([P(0,3,3),P(3,3,3),P(3,0,3),P(0,0,3)])}" fill="#111" stroke="#111" stroke-width="6" stroke-linejoin="round"/>`;
+  h+=`<polygon points="${pts([P(3,3,3),P(3,3,0),P(3,0,0),P(3,0,3)])}" fill="#111" stroke="#111" stroke-width="6" stroke-linejoin="round"/>`;
+  for(let i=0;i<3;i++)for(let j=0;j<3;j++){
+    const g=GAP;
+    h+=`<polygon id="${id}-U-${i}-${j}" points="${pts([P(i+g,3,j+g),P(i+1-g,3,j+g),P(i+1-g,3,j+1-g),P(i+g,3,j+1-g)])}" fill="${color('U',i,j)}"/>`;
+    h+=`<polygon id="${id}-F-${i}-${j}" points="${pts([P(i+g,j+1-g,3),P(i+1-g,j+1-g,3),P(i+1-g,j+g,3),P(i+g,j+g,3)])}" fill="${color('F',i,j)}"/>`;
+    h+=`<polygon id="${id}-R-${i}-${j}" points="${pts([P(3,j+1-g,3-i-g),P(3,j+1-g,2-i+g),P(3,j+g,2-i+g),P(3,j+g,3-i-g)])}" fill="${color('R',i,j)}"/>`;
+  }
+  svg.innerHTML=h+(svg.dataset.extra||'');
+}
+const set=(id,f,i,j,c)=>{const el=document.getElementById(`${id}-${f}-${i}-${j}`); el.style.fill=c; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); el.style.transformOrigin='center'; el.style.transformBox='fill-box';};
+const solved=(f)=>({U:Y,F:G,R:O})[f];
+const center=(f,i,j)=>(i==1&&j==1)?solved(f):GR;
+// position écran (px dans le svg affiché) d'une case
+function spot(id,f,i,j,scale){const el=document.getElementById(`${id}-${f}-${i}-${j}`);const b=el.getBBox();return [(b.x+b.width/2)*scale,(b.y+b.height/2)*scale];}
+function tap(fid,rid,x,y){const f=document.getElementById(fid),r=document.getElementById(rid);f.style.opacity=1;f.style.left=(x-6)+'px';f.style.top=(y+4)+'px';setTimeout(()=>{r.style.left=x+'px';r.style.top=y+'px';r.classList.remove('go');void r.offsetWidth;r.classList.add('go');},460);}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const $=id=>document.getElementById(id);
+
+cube('c0',center); cube('c1',center); cube('c2',solved);
+// cube mélangé pour l'écran 3
+const mix=[[Y,R,Y,G,Y,B,Y,O,W],[G,G,O,R,G,G,W,G,G],[O,B,O,O,O,Y,O,O,R]];
+cube('c3',(f,i,j)=>mix['UFR'.indexOf(f)][i*3+j]);
+// flèche d'aide sur la face avant (c3)
+(()=>{const s=$('c3');const [cx,cy]=P(1.5,1.5,3);
+ s.insertAdjacentHTML('beforeend',`<path class="arrow" id="arr" d="M ${cx-34} ${cy+10} A 38 30 0 1 1 ${cx+30} ${cy+24}"/><polygon class="arrowhead" id="arrh" points="${cx+18},${cy+38} ${cx+44},${cy+30} ${cx+26},${cy+12}"/>`);})();
+// palette
+const PAL=[Y,O,G,W,R,B]; $('pal').innerHTML=PAL.map((c,k)=>`<span id="p${k}" style="background:${c};${c==W?'box-shadow:inset 0 0 0 1px #C5CDD8':''}"></span>`).join('');
+
+(async()=>{
+  await wait(500);
+  // démarrage : le doigt colorie une case, le nom apparaît
+  let [x,y]=spot('c0','F',2,2,.75); tap('f0','r0',x,y); await wait(460); set('c0','F',2,2,G);
+  [x,y]=spot('c0','U',2,2,.75); await wait(380); tap('f0','r0',x,y); await wait(460); set('c0','U',2,2,Y);
+  $('brand').classList.add('on'); await wait(1500); $('f0').style.opacity=0;
+  $('splash').classList.add('out'); $('s1').classList.add('on'); await wait(800);
+  // écran 1 : recopier
+  const seq=[['F',0,2,G,2],['F',2,1,R,4],['U',0,0,Y,0],['R',1,2,O,1],['F',1,0,B,5],['U',2,1,W,3]];
+  for(const [f,i,j,c,k] of seq){ document.querySelectorAll('#pal span').forEach(s=>s.classList.remove('sel')); $('p'+k).classList.add('sel');
+    await wait(250); [x,y]=spot('c1',f,i,j,1.25); tap('f1','r1',x,y); await wait(470); set('c1',f,i,j,c); await wait(260); }
+  $('f1').style.opacity=0; await wait(400);
+  $('s1').classList.add('gone'); $('s2').classList.add('on'); await wait(800);
+  // écran 2 : suivre R U R' U' (la couche tourne : couleurs qui défilent)
+  const chips=[...document.querySelectorAll('#bar span')];
+  const turnR=async()=>{for(let k=0;k<3;k++){set('c2','F',2,k,Y);} await wait(160); for(let k=0;k<3;k++){set('c2','U',2,k,G);} };
+  const turnU=async()=>{for(let i=0;i<3;i++){set('c2','F',i,2,O);set('c2','R',i,2,B);} };
+  const undoR=async()=>{for(let k=0;k<3;k++){set('c2','F',2,k,G);set('c2','U',2,k,Y);} };
+  const undoU=async()=>{for(let i=0;i<3;i++){set('c2','F',i,2,G);set('c2','R',i,2,O);} };
+  const steps=[turnR,turnU,undoR,undoU];
+  for(let k=0;k<4;k++){chips.forEach((c,m)=>{c.className=m<k?'done':m==k?'cur':'';}); await wait(350); await steps[k](); await wait(650);}
+  chips.forEach(c=>c.className='done'); await wait(500);
+  $('s2').classList.add('gone'); $('s3').classList.add('on'); await wait(900);
+  // écran 3 : apprendre, l'aide montre la flèche
+  $('help').classList.add('pulse'); await wait(1100); $('arr').classList.add('on'); $('arrh').classList.add('on'); await wait(1700);
+  $('start').classList.add('pulse'); await wait(2200);
+  document.title='fini';
+})();
+</script></body></html>
