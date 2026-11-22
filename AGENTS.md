@@ -24,7 +24,8 @@ Avancement et prochaine tâche : [`docs/FEUILLE-DE-ROUTE.md`](docs/FEUILLE-DE-RO
 - **Livrer** : un changement est vert quand `npm test`, `npm run typecheck` et `npx expo-doctor` passent ; alors
   commit puis push sur `master`.
 - **APK** : l'utilisateur n'a pas Expo Go ; il essaie l'APK, construite sur le serveur (SDK Android dans
-  `/opt/android-sdk`, JDK 17). Pour publier : augmenter `expo.version` et `expo.android.versionCode` dans
+  `/opt/android-sdk`, JDK 17). **On ne construit ni ne publie l'APK que s'il le demande** (consigne du
+  2026-11-22) : un changement fini s'arrête au commit et au push. Pour publier, quand il le demande : augmenter `expo.version` et `expo.android.versionCode` dans
   `app.json`, puis `scripts/publier-apk.sh "ce qui change"`. Le script construit, dépose l'APK dans
   `/var/www/rubix-releases` (servi par le site nginx `brindoujunior`), écrit `rubix-latest.json` et vérifie le
   téléchargement. Le lien à donner est celui qu'il affiche : `https://brindoujunior.com/rubix-v<version>.apk`.
