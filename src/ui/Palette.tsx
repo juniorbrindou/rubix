@@ -16,10 +16,13 @@ export function Palette({
   brush,
   onChange,
   counts,
+  onSwatchLayout,
 }: {
   brush: Brush;
   onChange: (b: Brush) => void;
   counts: Record<Face | typeof UNKNOWN, number>;
+  /** Position de chaque pastille dans la rangée (démonstration : y amener le doigt). */
+  onSwatchLayout?: (b: Brush, rect: { x: number; y: number; width: number; height: number }) => void;
 }) {
   return (
     <View style={styles.row} accessibilityRole="radiogroup">
@@ -34,6 +37,7 @@ export function Palette({
           <Pressable
             key={b}
             onPress={() => onChange(b)}
+            onLayout={onSwatchLayout ? (e) => onSwatchLayout(b, e.nativeEvent.layout) : undefined}
             accessibilityRole="radio"
             accessibilityState={{ selected }}
             accessibilityLabel={b === UNKNOWN ? `Gomme, ${n} cases grises` : full ? `${name}, complet` : `${name}, ${n} sur 9`}
