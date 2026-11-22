@@ -1,0 +1,30 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="200" height="200" rx="44" fill="#111111" /><polygon points="100.0,44.0 146.8,71.0 100.0,98.0 53.2,71.0" fill="#111111" stroke="#111111" stroke-width="3.2" stroke-linejoin="round"/>
+<polygon points="53.2,71.0 100.0,98.0 100.0,152.0 53.2,125.0" fill="#111111" stroke="#111111" stroke-width="3.2" stroke-linejoin="round"/>
+<polygon points="100.0,98.0 146.8,71.0 146.8,125.0 100.0,152.0" fill="#111111" stroke="#111111" stroke-width="3.2" stroke-linejoin="round"/>
+<polygon points="100.0,45.6 112.8,53.0 100.0,60.4 87.2,53.0" fill="#FFD500" stroke-linejoin="round"/>
+<polygon points="84.4,54.6 97.2,62.0 84.4,69.4 71.6,62.0" fill="#8E96A3" stroke-linejoin="round"/>
+<polygon points="68.8,63.6 81.6,71.0 68.8,78.4 56.0,71.0" fill="#8E96A3" stroke-linejoin="round"/>
+<polygon points="115.6,54.6 128.4,62.0 115.6,69.4 102.8,62.0" fill="#8E96A3" stroke-linejoin="round"/>
+<polygon points="100.0,63.6 112.8,71.0 100.0,78.4 87.2,71.0" fill="#FFD500" stroke-linejoin="round"/>
+<polygon points="84.4,72.6 97.2,80.0 84.4,87.4 71.6,80.0" fill="#8E96A3" stroke-linejoin="round"/>
+<polygon points="131.2,63.6 144.0,71.0 131.2,78.4 118.4,71.0" fill="#D62828" stroke-linejoin="round"/>
+<polygon points="115.6,72.6 128.4,80.0 115.6,87.4 102.8,80.0" fill="#8E96A3" stroke-linejoin="round"/>
+<polygon points="100.0,81.6 112.8,89.0 100.0,96.4 87.2,89.0" fill="#8E96A3" stroke-linejoin="round"/>
+<polygon points="54.6,109.4 67.4,116.8 67.4,131.6 54.6,124.2" fill="#8E96A3" />
+<polygon points="101.4,134.8 114.2,127.4 114.2,142.2 101.4,149.6" fill="#8E96A3" />
+<polygon points="54.6,91.4 67.4,98.8 67.4,113.6 54.6,106.2" fill="#FF6A00" />
+<polygon points="101.4,116.8 114.2,109.4 114.2,124.2 101.4,131.6" fill="#FFD500" />
+<polygon points="54.6,73.4 67.4,80.8 67.4,95.6 54.6,88.2" fill="#00A651" />
+<polygon points="101.4,98.8 114.2,91.4 114.2,106.2 101.4,113.6" fill="#8E96A3" />
+<polygon points="70.2,118.4 83.0,125.8 83.0,140.6 70.2,133.2" fill="#8E96A3" />
+<polygon points="117.0,125.8 129.8,118.4 129.8,133.2 117.0,140.6" fill="#8E96A3" />
+<polygon points="70.2,100.4 83.0,107.8 83.0,122.6 70.2,115.2" fill="#8E96A3" />
+<polygon points="117.0,107.8 129.8,100.4 129.8,115.2 117.0,122.6" fill="#8E96A3" />
+<polygon points="70.2,82.4 83.0,89.8 83.0,104.6 70.2,97.2" fill="#0051BA" />
+<polygon points="117.0,89.8 129.8,82.4 129.8,97.2 117.0,104.6" fill="#FFFFFF" />
+<polygon points="85.8,127.4 98.6,134.8 98.6,149.6 85.8,142.2" fill="#8E96A3" />
+<polygon points="132.6,116.8 145.4,109.4 145.4,124.2 132.6,131.6" fill="#8E96A3" />
+<polygon points="85.8,109.4 98.6,116.8 98.6,131.6 85.8,124.2" fill="#8E96A3" />
+<polygon points="132.6,98.8 145.4,91.4 145.4,106.2 132.6,113.6" fill="#8E96A3" />
+<polygon points="85.8,91.4 98.6,98.8 98.6,113.6 85.8,106.2" fill="#8E96A3" />
+<polygon points="132.6,80.8 145.4,73.4 145.4,88.2 132.6,95.6" fill="#FF6A00" /><circle cx="36.0" cy="172" r="10" fill="#FFD500" /><circle cx="61.6" cy="172" r="10" fill="#FF6A00" /><circle cx="87.2" cy="172" r="10" fill="#00A651" /><circle cx="112.8" cy="172" r="10" fill="#FFFFFF" stroke="#111" stroke-width="2"/><circle cx="138.4" cy="172" r="10" fill="#D62828" /><circle cx="164.0" cy="172" r="10" fill="#0051BA" /></svg>

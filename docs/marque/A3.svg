@@ -1,0 +1,33 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="200" height="200" rx="44" fill="#111111" /><polygon points="100.0,78.0 154.6,109.5 100.0,141.0 45.4,109.5" fill="#111111" stroke="#111111" stroke-width="3.8" stroke-linejoin="round"/>
+<polygon points="45.4,109.5 100.0,141.0 100.0,183.0 45.4,151.5" fill="#111111" stroke="#111111" stroke-width="3.8" stroke-linejoin="round"/>
+<polygon points="100.0,141.0 154.6,109.5 154.6,151.5 100.0,183.0" fill="#111111" stroke="#111111" stroke-width="3.8" stroke-linejoin="round"/>
+<polygon points="47.1,133.3 62.0,141.9 62.0,159.2 47.1,150.6" fill="#00A651" />
+<polygon points="101.6,162.9 116.5,154.3 116.5,171.6 101.6,180.2" fill="#FF6A00" />
+<polygon points="47.1,112.3 62.0,120.9 62.0,138.2 47.1,129.6" fill="#00A651" />
+<polygon points="101.6,141.9 116.5,133.3 116.5,150.6 101.6,159.2" fill="#FF6A00" />
+<polygon points="65.3,143.8 80.2,152.4 80.2,169.7 65.3,161.1" fill="#00A651" />
+<polygon points="119.8,152.4 134.7,143.8 134.7,161.1 119.8,169.7" fill="#FF6A00" />
+<polygon points="65.3,122.8 80.2,131.4 80.2,148.7 65.3,140.1" fill="#00A651" />
+<polygon points="119.8,131.4 134.7,122.8 134.7,140.1 119.8,148.7" fill="#FF6A00" />
+<polygon points="83.5,154.3 98.4,162.9 98.4,180.2 83.5,171.6" fill="#00A651" />
+<polygon points="138.0,141.9 152.9,133.3 152.9,150.6 138.0,159.2" fill="#FF6A00" />
+<polygon points="83.5,133.3 98.4,141.9 98.4,159.2 83.5,150.6" fill="#00A651" />
+<polygon points="138.0,120.9 152.9,112.3 152.9,129.6 138.0,138.2" fill="#FF6A00" />
+<polygon points="100.0,49.6 154.6,81.1 100.0,112.6 45.4,81.1" fill="#111111" stroke="#111111" stroke-width="3.8" stroke-linejoin="round"/>
+<polygon points="45.4,81.1 100.0,112.6 100.0,133.7 45.4,102.2" fill="#111111" stroke="#111111" stroke-width="3.8" stroke-linejoin="round"/>
+<polygon points="100.0,112.6 154.6,81.1 154.6,102.2 100.0,133.7" fill="#111111" stroke="#111111" stroke-width="3.8" stroke-linejoin="round"/>
+<polygon points="100.0,51.5 114.9,60.1 100.0,68.8 85.1,60.1" fill="#FFD500" stroke-linejoin="round"/>
+<polygon points="81.8,62.0 96.7,70.6 81.8,79.3 66.9,70.6" fill="#FFD500" stroke-linejoin="round"/>
+<polygon points="63.6,72.5 78.5,81.1 63.6,89.8 48.7,81.1" fill="#FFD500" stroke-linejoin="round"/>
+<polygon points="118.2,62.0 133.1,70.6 118.2,79.3 103.3,70.6" fill="#FFD500" stroke-linejoin="round"/>
+<polygon points="100.0,72.5 114.9,81.1 100.0,89.8 85.1,81.1" fill="#FFD500" stroke-linejoin="round"/>
+<polygon points="81.8,83.0 96.7,91.6 81.8,100.3 66.9,91.6" fill="#FFD500" stroke-linejoin="round"/>
+<polygon points="136.4,72.5 151.3,81.1 136.4,89.8 121.5,81.1" fill="#FFD500" stroke-linejoin="round"/>
+<polygon points="118.2,83.0 133.1,91.6 118.2,100.3 103.3,91.6" fill="#FFD500" stroke-linejoin="round"/>
+<polygon points="100.0,93.5 114.9,102.1 100.0,110.8 85.1,102.1" fill="#FFD500" stroke-linejoin="round"/>
+<polygon points="47.1,84.0 62.0,92.6 62.0,109.8 47.1,101.2" fill="#00A651" />
+<polygon points="101.6,113.6 116.5,105.0 116.5,122.2 101.6,130.8" fill="#FF6A00" />
+<polygon points="65.3,94.5 80.2,103.1 80.2,120.3 65.3,111.7" fill="#00A651" />
+<polygon points="119.8,103.1 134.7,94.5 134.7,111.7 119.8,120.3" fill="#FF6A00" />
+<polygon points="83.5,105.0 98.4,113.6 98.4,130.8 83.5,122.2" fill="#00A651" />
+<polygon points="138.0,92.6 152.9,84.0 152.9,101.2 138.0,109.8" fill="#FF6A00" /><path d="M 26.7 75.7 L 24.5 72.0 L 23.0 68.3 L 22.1 64.4 L 22.0 60.6 L 22.7 56.8 L 24.0 53.0 L 26.0 49.3 L 28.7 45.7 L 32.1 42.3 L 36.1 39.1 L 40.7 36.0 L 45.8 33.2 L 51.4 30.7 L 57.5 28.5 L 64.0 26.5 L 70.8 24.9 L 77.8 23.6 L 85.1 22.7 L 92.5 22.2 L 100.0 22.0 L 107.5 22.2 L 114.9 22.7 L 122.2 23.6 L 129.2 24.9 L 136.0 26.5 L 142.5 28.5 L 148.6 30.7 L 154.2 33.2 L 159.3 36.0 L 163.9 39.1 L 167.9 42.3 L 171.3 45.7 L 174.0 49.3 L 176.0 53.0 L 177.3 56.8 L 178.0 60.6 L 177.9 64.4 L 177.0 68.3" fill="none" stroke="#FF2D95" stroke-width="9" stroke-linecap="round"/><polygon points="169.5,83.2 170.9,61.9 185.8,69.4" fill="#FF2D95" stroke="#FF2D95" stroke-width="3" stroke-linejoin="round"/></svg>

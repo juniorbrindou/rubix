@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Rubix",
+    "name": "Rubix Coach",
     "slug": "rubix",
-    "version": "0.6.1",
+    "version": "0.6.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,14 +12,13 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#111111",
         "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.brindoujunior.rubix",
-      "versionCode": 601
+      "versionCode": 602
     },
     "web": {
       "favicon": "./assets/favicon.png"
