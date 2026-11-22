@@ -34,7 +34,7 @@ export interface Pieces {
   edgeOrientation: number[];
 }
 
-const REASSEMBLED = 'Ce cube a été démonté puis mal remonté : aucune suite de mouvements ne peut le résoudre.';
+const REASSEMBLED = 'Ce cube a été démonté puis mal remonté : aucune suite de mouvements ne peut le résoudre.';
 
 function fail(error: ValidationError, facelet: number | null, message: string): Validation {
   return { ok: false, error, facelet, message };
@@ -75,7 +75,7 @@ function analyze(state: CubeState): { validation: Validation; pieces?: Pieces } 
   for (const face of FACES) {
     const i = centerIndex(face);
     if (state[i] !== face)
-      return result(fail('center', i, `Le centre de cette face doit être ${FACE_COLOR_NAME[face]} : les centres ne bougent jamais.`));
+      return result(fail('center', i, `Le centre de cette face doit être ${FACE_COLOR_NAME[face]} : les centres ne bougent jamais.`));
   }
 
   const counts = new Map<Face, number>(FACES.map((f) => [f, 0]));

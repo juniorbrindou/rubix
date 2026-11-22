@@ -27,7 +27,7 @@ export const STAGE_GUIDES: Record<StageId, StageGuide> = {
     image: require('../../assets/fiches/etape-1.png'),
     hold: [HOLD, 'Chaque arête blanche se place sous son centre de couleur.'],
     formulas: [],
-    note: 'Pas de formule : l’app indique chaque coup.',
+    note: 'Pas de formule : l’app indique chaque coup.',
     done: ['Croix blanche sur la face du bas.', 'Chaque arête assortie au centre de son côté.'],
   },
   firstLayer: {
@@ -90,6 +90,6 @@ export const STAGE_GUIDES: Record<StageId, StageGuide> = {
     formulas: [{ moves: ALGORITHMS.edgeCycleA }],
     note: 'À retenir d’un bloc. Le cube se défait en cours de route, puis se reforme.',
     done: ['Cube résolu.'],
-    warning: { title: 'Une arête reste mal placée ?', text: 'Répétez la formule une seconde fois.' },
+    warning: { title: 'Une arête reste mal placée ?', text: 'Répétez la formule une seconde fois.' },
   },
 };

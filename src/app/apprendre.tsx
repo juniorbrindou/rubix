@@ -6,7 +6,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { SOLVED, applyMove, applyMoves, invertMove, randomScramble, validate, type Move } from '@/cube';
 import { CubeView } from '@/scene/CubeView';
 import { STAGES, STAGE_LABEL, solve, stageDone, type SolutionStep } from '@/solver';
-import { ActionButton, CubeStage, Dock, QuietButton, ScreenHeader } from '@/ui/components';
+import { ActionButton, CubeStage, Dock, ScreenHeader } from '@/ui/components';
+import { ModeTabs } from '@/ui/ModeTabs';
 import { describeMove } from '@/ui/moveText';
 import { InfoButton, StageGuideSheet } from '@/ui/StageGuideSheet';
 import { GUTTER, color, font, radius, space } from '@/ui/theme';
@@ -77,14 +78,9 @@ export default function LearnScreen() {
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'left', 'right']}>
+      <ModeTabs active="learn" onSelect={() => (router.canGoBack() ? router.back() : router.replace('/'))} />
       <ScreenHeader
-        top={
-          <View style={styles.topRow}>
-            <QuietButton label="‹ Retour" onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} />
-            <Text style={styles.counter}>{count}</Text>
-          </View>
-        }
-        eyebrow="Apprendre"
+        eyebrow={count}
         title="Résolvez-le vous-même"
         titleAside={<InfoButton onPress={() => setGuideOpen(true)} />}
         subtitle={fromRealCube ? 'Votre cube, tel que saisi.' : 'Un cube mélangé au hasard.'}
@@ -96,7 +92,7 @@ export default function LearnScreen() {
 
       <View style={styles.panel}>
         {solved ? (
-          <Text style={styles.done}>{history.length ? `Bravo, résolu en ${count} !` : 'Ce cube est déjà résolu.'}</Text>
+          <Text style={styles.done}>{history.length ? `Bravo, résolu en ${count} !` : 'Ce cube est déjà résolu.'}</Text>
         ) : hint ? (
           <View style={styles.hintRow}>
             <View style={styles.moveTile}>
@@ -112,7 +108,7 @@ export default function LearnScreen() {
             </View>
           </View>
         ) : (
-          <Text style={styles.note}>Un doigt sur une face la tourne, deux doigts tournent le cube. Besoin d’un coup de pouce ? Aide.</Text>
+          <Text style={styles.note}>Un doigt sur une face la tourne, deux doigts tournent le cube. Besoin d’un coup de pouce ? Aide.</Text>
         )}
       </View>
 
@@ -138,8 +134,6 @@ export default function LearnScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: color.mat },
-  topRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: space.xs },
-  counter: { fontFamily: font.displayMedium, fontSize: 14, color: color.inkSoft, fontVariant: ['tabular-nums'] },
   panel: { minHeight: 76, paddingHorizontal: GUTTER, justifyContent: 'center', marginBottom: space.sm },
   hintRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   moveTile: {
@@ -159,6 +153,6 @@ const styles = StyleSheet.create({
   note: { fontFamily: font.body, fontSize: 15, lineHeight: 21, color: color.inkSoft, textAlign: 'center' },
   done: { fontFamily: font.display, fontSize: 18, color: color.ok, textAlign: 'center' },
   controls: { flexDirection: 'row', gap: space.sm },
-  side: { flex: 1 },
-  main: { flex: 1.3 },
+  side: { flex: 1, paddingHorizontal: space.xs },
+  main: { flex: 1 },
 });

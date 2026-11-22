@@ -37,7 +37,7 @@ export default function RootLayout() {
     return (
       <Report
         title="L’app s’est fermée la dernière fois"
-        lines={[crash.device, `Lancement du ${crash.started}`, 'Dernières étapes atteintes :', ...crash.steps.slice(-15)]}
+        lines={[crash.device, `Lancement du ${crash.started}`, 'Dernières étapes atteintes :', ...crash.steps.slice(-15)]}
         onContinue={() => setCrash(null)}
       />
     );

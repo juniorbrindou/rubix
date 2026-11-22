@@ -144,7 +144,7 @@ function Player({ start }: { start: string }) {
             <Text style={styles.instructionText}>{describeMove(move)}</Text>
           </>
         ) : (
-          <Text style={styles.done}>{total === 0 ? 'Votre cube est déjà résolu.' : 'Bravo, votre cube est résolu !'}</Text>
+          <Text style={styles.done}>{total === 0 ? 'Votre cube est déjà résolu.' : 'Bravo, votre cube est résolu !'}</Text>
         )}
       </View>
 

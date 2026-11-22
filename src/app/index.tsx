@@ -16,7 +16,8 @@ import {
 } from '@/input/input';
 import { CubeView } from '@/scene/CubeView';
 import { STAGE_LABEL, solve } from '@/solver';
-import { ActionButton, CubeStage, Dock, QuietButton, ScreenHeader } from '@/ui/components';
+import { ActionButton, CubeStage, Dock, ScreenHeader } from '@/ui/components';
+import { EraseButton, ModeTabs } from '@/ui/ModeTabs';
 import { Palette, type Brush } from '@/ui/Palette';
 import { GUTTER, color, font, radius, space } from '@/ui/theme';
 
@@ -64,7 +65,7 @@ export default function InputScreen() {
 
   const onFaceletPress = (facelet: number) => {
     const lock = lockingStage(facelet, level);
-    if (lock === 'center') return setHint('Les centres ne bougent jamais : leur couleur est déjà connue.');
+    if (lock === 'center') return setHint('Les centres ne bougent jamais : leur couleur est déjà connue.');
     if (lock) return setHint(`Cette case est fixée par « ${STAGE_LABEL[lock]} ». Décochez l’étape pour la modifier.`);
     if (brush !== '?' && paintRefusal(state, facelet, brush, level) === 'full')
       return setHint(`Les 9 cases ${FACE_COLOR_PLURAL[brush]} sont déjà placées. Gommez-en une si elle est mal placée.`);
@@ -88,29 +89,23 @@ export default function InputScreen() {
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'left', 'right']}>
-      <ScreenHeader
-        top={
-          <View style={styles.topRow}>
-            <QuietButton
-              label={status.kind === 'valid' ? 'Le résoudre moi-même ›' : 'Apprendre sur un cube mélangé ›'}
-              onPress={() => router.push(status.kind === 'valid' ? { pathname: '/apprendre', params: { state } } : '/apprendre')}
-            />
-          </View>
-        }
-        title="Montrez-moi votre cube"
-        subtitle="Jaune en haut, vert face à vous."
-        aside={
-          <QuietButton
-            label="Tout effacer"
-            onPress={() => {
-              pending.current = [];
-              setState(emptyInput());
-              setLevel(0);
-              setHint(null);
-            }}
-          />
-        }
+      <ModeTabs
+        active="cube"
+        onSelect={() => router.push(status.kind === 'valid' ? { pathname: '/apprendre', params: { state } } : '/apprendre')}
       />
+      <View style={styles.headRow}>
+        <View style={styles.headText}>
+          <ScreenHeader title="Montrez-moi votre cube" subtitle="Jaune en haut, vert face à vous." />
+        </View>
+        <EraseButton
+          onErase={() => {
+            pending.current = [];
+            setState(emptyInput());
+            setLevel(0);
+            setHint(null);
+          }}
+        />
+      </View>
 
       <Text style={styles.section}>Étapes déjà terminées</Text>
       <StageRail level={level} onToggle={toggleStage} />
@@ -154,7 +149,7 @@ function StageRail({ level, onToggle }: { level: number; onToggle: (index: numbe
             onLayout={(e) => (x.current[i] = e.nativeEvent.layout.x)}
             accessibilityRole="checkbox"
             accessibilityState={{ checked: on }}
-            accessibilityLabel={`Étape ${i + 1} : ${STAGE_LABEL[stage]}`}
+            accessibilityLabel={`Étape ${i + 1} : ${STAGE_LABEL[stage]}`}
             style={({ pressed }) => [styles.stage, on && styles.stageOn, pressed && { opacity: 0.8 }]}
           >
             <View style={[styles.stageMark, on && styles.stageMarkOn]}>
@@ -181,7 +176,7 @@ function describe(status: ReturnType<typeof inputStatus>, state: string, level: 
       // Les cases fixées par une étape cochée sont justes : seules celles coloriées à la main sont suspectes.
       const cells = [...state].flatMap((c, i) => (c === status.face && !lockingStage(i, level) ? [i] : []));
       return {
-        message: `Il y a ${status.count} cases ${FACE_COLOR_PLURAL[status.face]}, il en faut 9 : une de celles entourées est fausse.`,
+        message: `Il y a ${status.count} cases ${FACE_COLOR_PLURAL[status.face]}, il en faut 9 : une de celles entourées est fausse.`,
         tone: 'error' as const,
         highlight: cells,
         focus: cells[0] ?? status.facelet,
@@ -198,7 +193,7 @@ function describe(status: ReturnType<typeof inputStatus>, state: string, level: 
     }
     case 'valid':
       return {
-        message: 'Cube valide : la solution est prête.',
+        message: 'Cube valide : la solution est prête.',
         tone: 'ok' as const,
         highlight: [] as number[],
         focus: null,
@@ -207,7 +202,8 @@ function describe(status: ReturnType<typeof inputStatus>, state: string, level: 
 }
 
 const styles = StyleSheet.create({
-  topRow: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 2 },
+  headRow: { flexDirection: 'row', alignItems: 'center', paddingRight: GUTTER },
+  headText: { flex: 1 },
   screen: { flex: 1, backgroundColor: color.mat },
   section: {
     marginTop: space.md,
