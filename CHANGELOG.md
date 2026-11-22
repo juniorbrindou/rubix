@@ -2,6 +2,8 @@
 
 ## [À venir]
 
+## [0.7.2] — 2026-11-22
+
 - Onglets « Mon cube | Apprendre » en haut des deux écrans ; « Effacer » devient une corbeille légendée qui
   demande confirmation.
 - Espaces insécables avant « : ? ! » : la ponctuation ne passe plus seule à la ligne.
