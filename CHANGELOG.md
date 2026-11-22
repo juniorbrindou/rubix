@@ -2,6 +2,8 @@
 
 ## [À venir]
 
+## [0.8.1] — 2026-11-22
+
 - Nouvelle icône : un cube à moitié recopié sur fond jaune, plus grande et plus visible sur l'écran d'accueil.
 
 ## [0.8.0] — 2026-11-22
