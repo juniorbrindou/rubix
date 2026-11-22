@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, Pressable, StyleSheet, Text, View, type GestureResponderEvent } from 'react-native';
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
@@ -192,6 +193,16 @@ function faceletOfHit(hit: THREE.Intersection | undefined): number | null {
 interface SceneHandle {
   camera: THREE.Camera;
   root: THREE.Object3D;
+  /** Demande une image : la scène se redessine même si la boucle d'affichage s'est arrêtée. */
+  invalidate: () => void;
+}
+
+const VIEW_EULER = new THREE.Euler(0, 0, 0, 'XYZ');
+
+/** Tangage puis lacet : le haut du cube reste en haut, sans roulis accumulé. */
+function applyView(root: THREE.Object3D, view: ViewState) {
+  VIEW_EULER.set(view.pitch, view.yaw, 0, 'XYZ');
+  root.quaternion.setFromEuler(VIEW_EULER);
 }
 
 function Cube({
@@ -214,13 +225,21 @@ function Cube({
   viewRef: React.RefObject<ViewState>;
 }) {
   const camera = useThree((s) => s.camera);
+  const invalidate = useThree((s) => s.invalidate);
+  // La poignée de la scène existe dès le montage, sans attendre une image de la boucle d'affichage.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    applyView(root, viewRef.current);
+    handleRef.current = { camera, root, invalidate };
+    invalidate();
+  }, [camera, invalidate, rootRef, handleRef, viewRef]);
   const layerRef = useRef<THREE.Group>(null);
   const progress = useRef({ animation: null as CubeAnimation | null, elapsed: 0, done: false });
   const cubies = useMemo(() => cubiesOf(state), [state]);
   const turn = animation ? moveTurn(animation.move) : null;
   const moving = turn ? cubies.filter((c) => c.position[turn.axis] === turn.layer) : [];
   const still = turn ? cubies.filter((c) => c.position[turn.axis] !== turn.layer) : cubies;
-  const euler = useRef(new THREE.Euler(0, 0, 0, 'XYZ'));
 
   if (progress.current.animation !== animation) progress.current = { animation, elapsed: 0, done: false };
 
@@ -241,10 +260,8 @@ function Cube({
     }
     const root = rootRef.current;
     if (root) {
-      // Tangage puis lacet : le haut du cube reste en haut, sans roulis accumulé.
-      euler.current.set(view.pitch, view.yaw, 0, 'XYZ');
-      root.quaternion.setFromEuler(euler.current);
-      handleRef.current = { camera, root };
+      applyView(root, view);
+      handleRef.current = { camera, root, invalidate };
     }
 
     const p = progress.current;
@@ -313,10 +330,10 @@ export function CubeView({
   });
 
   useEffect(() => {
-    if (focus !== null) viewRef.current.target = viewFacing(FACELET_GEOMETRY[focus].normal);
+    if (focus !== null) aimAt(viewFacing(FACELET_GEOMETRY[focus].normal));
   }, [focus]);
   useEffect(() => {
-    if (hint) viewRef.current.target = viewFacing(FACELET_GEOMETRY[faceCenterOf(hint)].normal);
+    if (hint) aimAt(viewFacing(FACELET_GEOMETRY[faceCenterOf(hint)].normal));
   }, [hint]);
   useEffect(() => mark('3D : vue montée, avant le canevas'), []);
 
@@ -357,7 +374,36 @@ export function CubeView({
     view.target = null;
     view.yaw += dx * DRAG_SPEED;
     view.pitch = clampPitch(view.pitch + dy * DRAG_SPEED);
+    // On tourne tout de suite et on demande une image : la rotation ne dépend pas de la boucle d'affichage.
+    const handle = handleRef.current;
+    if (handle) {
+      applyView(handle.root, view);
+      handle.invalidate();
+    }
   };
+
+  /** Lance une rotation douce vers un point de vue (focus, aide, recentrer). */
+  const aimAt = (target: { yaw: number; pitch: number }) => {
+    viewRef.current.target = target;
+    handleRef.current?.invalidate();
+  };
+
+  // Sur Android, l'écran qu'on quitte perd sa surface 3D native : au retour, le canevas est recréé à neuf
+  // (l'état du cube et le point de vue, gardés hors du canevas, sont conservés).
+  const [canvasKey, setCanvasKey] = useState(0);
+  const blurred = useRef(false);
+  useFocusEffect(
+    useCallback(() => {
+      if (blurred.current) {
+        blurred.current = false;
+        handleRef.current = null;
+        setCanvasKey((k) => k + 1);
+      }
+      return () => {
+        blurred.current = true;
+      };
+    }, []),
+  );
 
   // Les gestionnaires lisent les props à jour via une référence : le répondeur n'est créé qu'une fois.
   const props = useRef({ mode, onFaceletPress, onTurn, busy: !!animation });
@@ -419,6 +465,7 @@ export function CubeView({
     >
       <View style={styles.fill} {...responder.panHandlers}>
         <Canvas
+          key={canvasKey}
           flat
           camera={{ position: [0, 0, 7.5], fov: 40 }}
           style={styles.fill}
@@ -440,7 +487,7 @@ export function CubeView({
         </Canvas>
       </View>
       <Pressable
-        onPress={() => (viewRef.current.target = { ...VIEW })}
+        onPress={() => aimAt({ ...VIEW })}
         style={({ pressed }) => [styles.recenter, pressed && { opacity: 0.6 }]}
         accessibilityLabel="Revenir à la vue de départ"
         hitSlop={8}

@@ -2,6 +2,9 @@
 
 ## [À venir]
 
+- Corrige le cube qui ne tournait plus après un passage par « Apprendre » : la vue 3D est recréée au retour
+  sur l'écran, et la rotation au doigt s'affiche sans attendre la boucle d'affichage.
+
 ## [0.7.1] — 2026-11-22
 
 - Mise à jour intégrée : un bandeau signale une nouvelle version ; « Mettre à jour » la télécharge et ouvre
