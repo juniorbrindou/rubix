@@ -48,9 +48,20 @@ export function changeLevel(state: CubeState, from: number, to: number): { state
   return { state: setFacelets(state, cleared, () => UNKNOWN), filled: [] };
 }
 
-/** Colorie une case. Une case déjà de cette couleur redevient inconnue. Une case fixée ne change pas. */
+/** Pourquoi une case ne peut pas recevoir cette couleur, ou `null` si elle le peut. */
+export function paintRefusal(state: CubeState, facelet: number, color: Face | typeof UNKNOWN, level: number): 'locked' | 'full' | null {
+  if (lockingStage(facelet, level)) return 'locked';
+  // Une couleur a 9 cases sur un vrai cube : une fois toutes placées, on ne peut plus en poser ailleurs.
+  if (color !== UNKNOWN && state[facelet] !== color && colorCounts(state)[color] >= 9) return 'full';
+  return null;
+}
+
+/**
+ * Colorie une case. Une case déjà de cette couleur redevient inconnue. Une case fixée, ou une couleur dont les
+ * 9 cases sont déjà placées, ne change rien (voir `paintRefusal`).
+ */
 export function paint(state: CubeState, facelet: number, color: Face | typeof UNKNOWN, level: number): CubeState {
-  if (lockingStage(facelet, level)) return state;
+  if (paintRefusal(state, facelet, color, level)) return state;
   const next = state[facelet] === color ? UNKNOWN : color;
   return setFacelets(state, [facelet], () => next);
 }

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Rubix Coach",
     "slug": "rubix",
-    "version": "0.6.2",
+    "version": "0.6.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,7 +18,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.brindoujunior.rubix",
-      "versionCode": 602
+      "versionCode": 603
     },
     "web": {
       "favicon": "./assets/favicon.png"

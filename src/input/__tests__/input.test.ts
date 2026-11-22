@@ -1,6 +1,6 @@
 import { SOLVED, applyMoves, parseMoves, randomScramble, seededRandom, type Face } from '../../cube';
 import { stageDone } from '../../solver';
-import { PRESET_STAGES, changeLevel, colorCounts, emptyInput, inputStatus, lockingStage, paint, presetFacelets } from '../input';
+import { PRESET_STAGES, changeLevel, colorCounts, emptyInput, inputStatus, lockingStage, paint, paintRefusal, presetFacelets } from '../input';
 
 describe('saisie', () => {
   test('un cube vierge ne connaît que ses centres', () => {
@@ -50,10 +50,22 @@ describe('saisie', () => {
     expect(inputStatus(state)).toEqual({ kind: 'valid' });
   });
 
-  test('une couleur en trop se signale avant la fin, sur une case qu’on peut corriger', () => {
+  test('une couleur dont les 9 cases sont placées ne se pose plus', () => {
+    let s = emptyInput(); // le centre jaune compte déjà
+    for (const f of [0, 1, 2, 3, 5, 6, 7, 8]) s = paint(s, f, 'U', 0);
+    expect(colorCounts(s).U).toBe(9);
+    expect(paintRefusal(s, 9, 'U', 0)).toBe('full');
+    expect(paint(s, 9, 'U', 0)).toBe(s);
+    // Gommer reste possible, et libère une case.
+    s = paint(s, 0, '?', 0);
+    expect(paintRefusal(s, 9, 'U', 0)).toBeNull();
+  });
+
+  test('une couleur en trop par une étape cochée se signale, sur les cases coloriées à la main', () => {
     let s = emptyInput();
-    for (const f of [0, 1, 2, 3, 5, 6, 7, 8, 9]) s = paint(s, f, 'U', 0);
-    expect(inputStatus(s)).toMatchObject({ kind: 'tooMany', face: 'U', count: 10, facelet: 0 });
+    for (const f of [9, 10]) s = paint(s, f, 'U', 0); // deux jaunes posés à la main sur R
+    s = changeLevel(s, 0, 5).state; // « Face jaune » : les 9 cases de U deviennent jaunes
+    expect(inputStatus(s)).toMatchObject({ kind: 'tooMany', face: 'U', count: 11 });
   });
 
   test('une erreur de recopie est désignée', () => {

@@ -1,4 +1,4 @@
-import { FACE_COLOR_NAME, FACELET_COUNT, FACES, UNKNOWN, centerIndex, isFace, type CubeState, type Face } from './faces';
+import { FACE_COLOR_NAME, FACE_COLOR_PLURAL, FACELET_COUNT, FACES, UNKNOWN, centerIndex, isFace, type CubeState, type Face } from './faces';
 import { CORNER_COLORS, CORNER_FACELETS, EDGE_COLORS, EDGE_FACELETS } from './pieces';
 
 export type ValidationError =
@@ -84,7 +84,7 @@ function analyze(state: CubeState): { validation: Validation; pieces?: Pieces } 
     const n = counts.get(face)!;
     if (n > 9) {
       const i = [...state].findIndex((c, k) => c === face && k !== centerIndex(face));
-      return result(fail('count', i, `Il y a ${n} cases ${FACE_COLOR_NAME[face]}, il en faut 9.`));
+      return result(fail('count', i, `Il y a ${n} cases ${FACE_COLOR_PLURAL[face]}, il en faut 9.`));
     }
   }
 

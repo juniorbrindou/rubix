@@ -25,6 +25,16 @@ export const FACE_COLOR_NAME: Record<Face, string> = {
   B: 'bleu',
 };
 
+/** Même chose au pluriel, pour « 9 cases jaunes » (orange est invariable). */
+export const FACE_COLOR_PLURAL: Record<Face, string> = {
+  U: 'jaunes',
+  R: 'orange',
+  F: 'vertes',
+  D: 'blanches',
+  L: 'rouges',
+  B: 'bleues',
+};
+
 export function isFace(c: string): c is Face {
   return (FACES as readonly string[]).includes(c);
 }

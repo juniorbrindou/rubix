@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View, type ScrollViewInstance } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FACE_COLOR_NAME, faceOfFacelet, pieceFacelets } from '@/cube';
+import { FACE_COLOR_PLURAL, faceOfFacelet, pieceFacelets } from '@/cube';
 import {
   PRESET_STAGES,
   changeLevel,
@@ -12,6 +12,7 @@ import {
   inputStatus,
   lockingStage,
   paint,
+  paintRefusal,
 } from '@/input/input';
 import { CubeView } from '@/scene/CubeView';
 import { STAGE_LABEL, solve } from '@/solver';
@@ -65,6 +66,8 @@ export default function InputScreen() {
     const lock = lockingStage(facelet, level);
     if (lock === 'center') return setHint('Les centres ne bougent jamais : leur couleur est déjà connue.');
     if (lock) return setHint(`Cette case est fixée par « ${STAGE_LABEL[lock]} ». Décoche l’étape pour la changer.`);
+    if (brush !== '?' && paintRefusal(state, facelet, brush, level) === 'full')
+      return setHint(`Les 9 cases ${FACE_COLOR_PLURAL[brush]} sont déjà placées. Gomme-en une si elle est mal placée.`);
     setHint(null);
     setState((s) => paint(flushPending(s), facelet, brush, level));
   };
@@ -178,7 +181,7 @@ function describe(status: ReturnType<typeof inputStatus>, state: string, level: 
       // Les cases fixées par une étape cochée sont justes : seules celles coloriées à la main sont suspectes.
       const cells = [...state].flatMap((c, i) => (c === status.face && !lockingStage(i, level) ? [i] : []));
       return {
-        message: `Il y a ${status.count} cases ${FACE_COLOR_NAME[status.face]}, il en faut 9 : une de celles entourées est fausse.`,
+        message: `Il y a ${status.count} cases ${FACE_COLOR_PLURAL[status.face]}, il en faut 9 : une de celles entourées est fausse.`,
         tone: 'error' as const,
         highlight: cells,
         focus: cells[0] ?? status.facelet,

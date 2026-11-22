@@ -28,6 +28,7 @@ export function Palette({
         const selected = brush === b;
         const n = counts[b];
         const over = b !== UNKNOWN && n > 9;
+        const full = b !== UNKNOWN && n === 9;
         const name = b === UNKNOWN ? 'Gomme' : FACE_COLOR_NAME[b as Face];
         return (
           <Pressable
@@ -35,7 +36,7 @@ export function Palette({
             onPress={() => onChange(b)}
             accessibilityRole="radio"
             accessibilityState={{ selected }}
-            accessibilityLabel={b === UNKNOWN ? `Gomme, ${n} cases grises` : `${name}, ${n} sur 9`}
+            accessibilityLabel={b === UNKNOWN ? `Gomme, ${n} cases grises` : full ? `${name}, complet` : `${name}, ${n} sur 9`}
             style={(s: PressableStateCallbackType & { focused?: boolean }) => [
               styles.item,
               s.focused && (styles.focus as ViewStyle),
@@ -54,8 +55,8 @@ export function Palette({
                 </View>
               )}
             </View>
-            <Text style={[styles.count, selected && styles.countOn, over && styles.countOver]}>
-              {b === UNKNOWN ? n : `${n}/9`}
+            <Text style={[styles.count, selected && styles.countOn, full && styles.countFull, over && styles.countOver]}>
+              {b === UNKNOWN ? n : full ? '✓ 9/9' : `${n}/9`}
             </Text>
           </Pressable>
         );
@@ -92,4 +93,6 @@ const styles = StyleSheet.create({
   count: { marginTop: 3, fontFamily: font.displayMedium, fontSize: 10, color: color.onPlateSoft, fontVariant: ['tabular-nums'] },
   countOn: { color: color.onPlate },
   countOver: { color: OVER },
+  /** Les 9 cases sont placées : la couleur ne se pose plus. */
+  countFull: { color: '#7BE495' },
 });
