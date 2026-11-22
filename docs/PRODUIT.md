@@ -29,7 +29,7 @@ La maquette d'origine : un cube 3D aux couleurs franches, contours noirs épais,
 trois boutons en bas, texte d'état sous le cube (« Appuie sur Lecture ou Suivant »). Le texte vouvoie l'utilisateur, en peu de mots.
 
 Système visuel (0.6.0, `src/ui/theme.ts`) : le cube lui-même. Fond « tapis » gris-bleu clair, plaques noires
-(le plastique), autocollants de couleur ; le jaune marque l'action principale et le mouvement en cours. Titres et
-notation en Unbounded, textes en Atkinson Hyperlegible Next. Chaque écran a un en-tête fixe, le cube au milieu
+(le plastique), autocollants de couleur ; le jaune marque l'action principale et le mouvement en cours. Titres,
+notation et textes en Inter (choisie le 2026-11-22). Chaque écran a un en-tête fixe, le cube au milieu
 (il rétrécit sur un petit téléphone) et un dock noir en bas ; un futur écran reprend ces briques
 (`src/ui/components.tsx`).

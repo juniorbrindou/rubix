@@ -31,12 +31,12 @@ export const color = {
 
 /** Familles chargées par `useAppFonts` (web, iOS) ou embarquées dans l'APK (plugin expo-font d'app.json). */
 export const font = {
-  /** Titres et notation des mouvements. Large et trapue, comme un cube ; à doser. */
-  display: 'Unbounded_700Bold',
-  displayMedium: 'Unbounded_500Medium',
+  /** Titres et notation des mouvements : Inter très grasse, nette en petit (choisie le 2026-11-22). */
+  display: 'Inter_800ExtraBold',
+  displayMedium: 'Inter_600SemiBold',
   /** Consignes et messages : lisible en un coup d'œil, cube en main. */
-  body: 'AtkinsonHyperlegibleNext_400Regular',
-  bodyBold: 'AtkinsonHyperlegibleNext_700Bold',
+  body: 'Inter_400Regular',
+  bodyBold: 'Inter_600SemiBold',
   mono: 'monospace',
 } as const;
 

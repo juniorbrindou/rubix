@@ -2,6 +2,8 @@
 
 ## [À venir]
 
+- Nouvelle police : Inter remplace Unbounded et Atkinson, pour des titres plus sobres et des mouvements plus lisibles.
+
 - Corrige le cube qui ne tournait plus après un passage par « Apprendre » : la vue 3D est recréée au retour
   sur l'écran, et la rotation au doigt s'affiche sans attendre la boucle d'affichage.
 

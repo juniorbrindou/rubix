@@ -1,7 +1,6 @@
-import { AtkinsonHyperlegibleNext_400Regular } from '@expo-google-fonts/atkinson-hyperlegible-next/400Regular';
-import { AtkinsonHyperlegibleNext_700Bold } from '@expo-google-fonts/atkinson-hyperlegible-next/700Bold';
-import { Unbounded_500Medium } from '@expo-google-fonts/unbounded/500Medium';
-import { Unbounded_700Bold } from '@expo-google-fonts/unbounded/700Bold';
+import { Inter_400Regular } from '@expo-google-fonts/inter/400Regular';
+import { Inter_600SemiBold } from '@expo-google-fonts/inter/600SemiBold';
+import { Inter_800ExtraBold } from '@expo-google-fonts/inter/800ExtraBold';
 import { useFonts } from 'expo-font';
 
 /**
@@ -10,5 +9,5 @@ import { useFonts } from 'expo-font';
  * On n'attend pas le chargement : en attendant, le texte s'affiche dans la police du système.
  */
 export function useAppFonts() {
-  useFonts({ Unbounded_700Bold, Unbounded_500Medium, AtkinsonHyperlegibleNext_400Regular, AtkinsonHyperlegibleNext_700Bold });
+  useFonts({ Inter_400Regular, Inter_600SemiBold, Inter_800ExtraBold });
 }
