@@ -25,6 +25,8 @@ Prendre la première phase non cochée. Une phase est finie quand son critère e
   (flèche + consigne), un second appui le joue ; Annuler. Accès en haut de l'écran de saisie. Gestes et Aide confirmés sur téléphone (0.6.1, le 2026-11-21) ;
   une résolution complète d'un mélange reste à faire.
   *Fini quand* : sur téléphone, un cube mélangé se résout jusqu'au bout avec les gestes et l'Aide.
+- [x] **8. Mise à jour intégrée** (`src/update`) — bandeau au démarrage, téléchargement et installation depuis l'app.
+  Confirmée sur téléphone le 2026-11-22 (0.7.1 → 0.7.2).
 - [ ] **6. Publication** — APK Android signée avec une vraie clé (aujourd'hui : clé de débogage). La distribution
   est en place : `scripts/publier-apk.sh` → `https://brindoujunior.com/rubix-v<version>.apk`.
   *Fini quand* : l'APK s'installe et le parcours complet fonctionne sans Expo Go.
