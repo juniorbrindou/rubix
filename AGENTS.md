@@ -15,7 +15,8 @@ Avancement et prochaine tâche : [`docs/FEUILLE-DE-ROUTE.md`](docs/FEUILLE-DE-RO
 - **Cœur pur** : `src/cube` et `src/solver` sont du TypeScript sans React, sans three.js, testés sous Node.
 - **Algorithme prouvé par test** : chaque algorithme ajouté au solveur a un test qui l'applique au modèle et
   vérifie ce qu'il préserve et ce qu'il produit. Un algorithme recopié d'un site n'est jamais pris pour juste.
-- **Langues** : identifiants du code en anglais, textes affichés et documentation en français. Le glossaire
+- **Langues** : identifiants du code en anglais, textes affichés et documentation en français. Les textes
+  affichés vouvoient l'utilisateur, en peu de mots et dans un français soigné. Le glossaire
   [`CONTEXT.md`](CONTEXT.md) donne la correspondance ; un nouveau terme métier y entre avant d'entrer dans le code.
 - **Petit écran** : chaque écran se vérifie sur un téléphone de 360 dp de large, sans défilement parasite.
   Sans téléphone, la version web s'ouvre dans le Chromium du serveur : `scripts/verifier-ecran-web.cjs`

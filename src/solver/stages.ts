@@ -18,7 +18,7 @@ export const STAGE_LABEL: Record<StageId, string> = {
   yellowCross: 'Croix jaune',
   yellowFace: 'Face jaune',
   yellowCorners: 'Coins jaunes',
-  solved: 'Cube résolu',
+  solved: 'Arêtes jaunes',
 };
 
 /**

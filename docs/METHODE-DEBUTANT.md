@@ -17,7 +17,7 @@ facettes de ce prédicat. Les étapes sont cumulatives : l'étape n exige aussi 
 | 4 | Croix jaune | + 4 facettes jaunes d'arête sur U | `F R U R' U' F'` |
 | 5 | Face jaune | + les 9 facettes de U jaunes | Sune : `R U R' U R U2 R'` |
 | 6 | Coins jaunes | + 4 coins de U à leur place | `R' F R' B2 R F' R' B2 R2` |
-| 7 | Cube résolu | état résolu | `R U' R U R U R U' R' U' R2` et son inverse `R2 U R U R' U' R' U' R' U R'` |
+| 7 | Arêtes jaunes | état résolu | `R U' R U R U R U' R' U' R2` et son inverse `R2 U R U R' U' R' U' R' U R'` |
 
 ## Comment chaque étape cherche ses mouvements
 

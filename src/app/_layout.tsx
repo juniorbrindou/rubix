@@ -66,7 +66,7 @@ function Report({ title, lines, onContinue }: { title: string; lines: string[]; 
         <Text style={styles.title} accessibilityRole="header">
           {title}
         </Text>
-        <Text style={styles.help}>Fais une capture de cet écran et envoie-la : elle dit exactement ce qui s’est passé.</Text>
+        <Text style={styles.help}>Faites une capture de cet écran et envoyez-la : elle indique exactement ce qui s’est passé.</Text>
         <View style={styles.log}>
           {lines.map((l, i) => (
             <Text key={i} selectable style={i === 0 ? styles.first : styles.line}>

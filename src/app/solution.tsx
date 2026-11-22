@@ -7,6 +7,7 @@ import { applyMove, invertMove, validate, type Move } from '@/cube';
 import { CubeView } from '@/scene/CubeView';
 import { STAGES, STAGE_LABEL, solve, type SolutionStep } from '@/solver';
 import { ActionButton, CubeStage, Dock, QuietButton, ScreenHeader } from '@/ui/components';
+import { InfoButton, StageGuideSheet } from '@/ui/StageGuideSheet';
 import { describeMove } from '@/ui/moveText';
 import { GUTTER, color, font, radius, space } from '@/ui/theme';
 
@@ -23,7 +24,7 @@ export default function SolutionScreen() {
 function Invalid() {
   return (
     <SafeAreaView style={styles.screen}>
-      <ScreenHeader eyebrow="Solution" title="Ce cube n’est pas valide." subtitle="Reviens à la saisie pour vérifier ses couleurs." />
+      <ScreenHeader eyebrow="Solution" title="Ce cube n’est pas valide." subtitle="Revenez à la saisie pour vérifier ses couleurs." />
       <View style={styles.invalidAction}>
         <ActionButton label="Revenir à la saisie" variant="go" onPress={() => router.replace('/')} />
       </View>
@@ -37,6 +38,7 @@ function Player({ start }: { start: string }) {
   const [index, setIndex] = useState(0); // nombre de mouvements déjà faits
   const [anim, setAnim] = useState<{ move: Move; dir: 1 | -1 } | null>(null);
   const [playing, setPlaying] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
   const total = steps.length;
   const finished = index === total;
 
@@ -97,6 +99,7 @@ function Player({ start }: { start: string }) {
         }
         eyebrow={`Étape ${stageNumber} sur ${STAGES.length}`}
         title={STAGE_LABEL[shownStage]}
+        titleAside={<InfoButton onPress={() => setGuideOpen(true)} />}
         subtitle={finished || !current ? undefined : current.label}
       />
 
@@ -141,7 +144,7 @@ function Player({ start }: { start: string }) {
             <Text style={styles.instructionText}>{describeMove(move)}</Text>
           </>
         ) : (
-          <Text style={styles.done}>{total === 0 ? 'Ton cube est déjà résolu.' : 'Bravo, ton cube est résolu !'}</Text>
+          <Text style={styles.done}>{total === 0 ? 'Votre cube est déjà résolu.' : 'Bravo, votre cube est résolu !'}</Text>
         )}
       </View>
 
@@ -166,6 +169,7 @@ function Player({ start }: { start: string }) {
           />
         </View>
       </Dock>
+      <StageGuideSheet stage={shownStage} visible={guideOpen} onClose={() => setGuideOpen(false)} />
       <StatusBar style="dark" />
     </SafeAreaView>
   );

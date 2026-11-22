@@ -5,9 +5,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SOLVED, applyMove, applyMoves, invertMove, randomScramble, validate, type Move } from '@/cube';
 import { CubeView } from '@/scene/CubeView';
-import { STAGE_LABEL, solve, type SolutionStep } from '@/solver';
+import { STAGES, STAGE_LABEL, solve, stageDone, type SolutionStep } from '@/solver';
 import { ActionButton, CubeStage, Dock, QuietButton, ScreenHeader } from '@/ui/components';
 import { describeMove } from '@/ui/moveText';
+import { InfoButton, StageGuideSheet } from '@/ui/StageGuideSheet';
 import { GUTTER, color, font, radius, space } from '@/ui/theme';
 
 // Volet « Apprendre » : un cube numérique qu'on résout soi-même. « Aide » montre le prochain mouvement de la
@@ -29,6 +30,9 @@ export default function LearnScreen() {
   const [pending, setPending] = useState<Pending | null>(null);
   const [hint, setHint] = useState<SolutionStep | null>(null);
   const solved = state === SOLVED;
+  const [guideOpen, setGuideOpen] = useState(false);
+  // L'étape en cours : celle de l'aide affichée, sinon la première pas encore finie.
+  const stage = hint?.stage ?? STAGES.find((s) => !stageDone(state, s)) ?? 'solved';
 
   const animation = useMemo(
     () =>
@@ -51,7 +55,7 @@ export default function LearnScreen() {
 
   const help = () => {
     if (pending || solved) return;
-    if (hint) return play(hint.move); // second appui : on le fait pour toi
+    if (hint) return play(hint.move); // second appui : l'app joue le coup
     const next = solve(state)[0];
     if (next) setHint(next);
   };
@@ -81,8 +85,9 @@ export default function LearnScreen() {
           </View>
         }
         eyebrow="Apprendre"
-        title="Résous-le toi-même"
-        subtitle={fromRealCube ? 'Ton cube, tel que tu l’as saisi.' : 'Un cube mélangé au hasard.'}
+        title="Résolvez-le vous-même"
+        titleAside={<InfoButton onPress={() => setGuideOpen(true)} />}
+        subtitle={fromRealCube ? 'Votre cube, tel que saisi.' : 'Un cube mélangé au hasard.'}
       />
 
       <CubeStage>
@@ -107,7 +112,7 @@ export default function LearnScreen() {
             </View>
           </View>
         ) : (
-          <Text style={styles.note}>Glisse un doigt sur une face pour la tourner, deux doigts pour tourner le cube. Bloqué ? Aide.</Text>
+          <Text style={styles.note}>Un doigt sur une face la tourne, deux doigts tournent le cube. Besoin d’un coup de pouce ? Aide.</Text>
         )}
       </View>
 
@@ -115,8 +120,8 @@ export default function LearnScreen() {
         <View style={styles.controls}>
           <ActionButton label="Annuler" onPress={undo} disabled={!history.length || !!pending} style={styles.side} />
           <ActionButton
-            label={hint ? 'Fais-le' : 'Aide'}
-            sublabel={hint ? 'ou suis la flèche' : undefined}
+            label={hint ? 'Jouer' : 'Aide'}
+            sublabel={hint ? 'ou suivez la flèche' : undefined}
             onPress={help}
             disabled={solved || !!pending}
             variant="go"
@@ -125,6 +130,7 @@ export default function LearnScreen() {
           <ActionButton label="Mélanger" onPress={reshuffle} disabled={!!pending} style={styles.side} />
         </View>
       </Dock>
+      <StageGuideSheet stage={stage} visible={guideOpen} onClose={() => setGuideOpen(false)} />
       <StatusBar style="dark" />
     </SafeAreaView>
   );

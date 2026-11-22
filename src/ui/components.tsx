@@ -16,6 +16,7 @@ export function ScreenHeader({
   subtitle,
   aside,
   top,
+  titleAside,
 }: {
   eyebrow?: string;
   title: string;
@@ -24,14 +25,19 @@ export function ScreenHeader({
   aside?: ReactNode;
   /** Au-dessus du titre : retour, compteur. */
   top?: ReactNode;
+  /** Collé au titre : un bouton discret (la fiche de l'étape). */
+  titleAside?: ReactNode;
 }) {
   return (
     <View style={styles.header}>
       {top}
       {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
-      <Text style={styles.title} numberOfLines={2} accessibilityRole="header">
-        {title}
-      </Text>
+      <View style={styles.titleRow}>
+        <Text style={styles.title} numberOfLines={2} accessibilityRole="header">
+          {title}
+        </Text>
+        {titleAside}
+      </View>
       {subtitle || aside ? (
         <View style={styles.subRow}>
           <Text style={styles.subtitle}>{subtitle}</Text>
@@ -134,7 +140,8 @@ export function CubeStage({ children }: { children: ReactNode }) {
 const styles = StyleSheet.create({
   header: { paddingHorizontal: GUTTER, paddingTop: space.sm },
   eyebrow: { fontFamily: font.displayMedium, fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', color: color.inkMute },
-  title: { fontFamily: font.display, fontSize: 20, lineHeight: 26, color: color.ink, letterSpacing: -0.4 },
+  titleRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  title: { flexShrink: 1, fontFamily: font.display, fontSize: 20, lineHeight: 26, color: color.ink, letterSpacing: -0.4 },
   subRow: { marginTop: 2, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm },
   subtitle: { flexShrink: 1, fontFamily: font.body, fontSize: 15, color: color.inkSoft },
   dock: {

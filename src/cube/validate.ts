@@ -22,7 +22,7 @@ export type Validation =
       error: ValidationError;
       /** Première facette fautive, ou `null` quand la faute tient au cube entier (torsion, retournement, parité). */
       facelet: number | null;
-      /** Explication affichable, tutoiement. */
+      /** Explication affichable, au vouvoiement. */
       message: string;
     };
 

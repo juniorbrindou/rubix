@@ -65,9 +65,9 @@ export default function InputScreen() {
   const onFaceletPress = (facelet: number) => {
     const lock = lockingStage(facelet, level);
     if (lock === 'center') return setHint('Les centres ne bougent jamais : leur couleur est déjà connue.');
-    if (lock) return setHint(`Cette case est fixée par « ${STAGE_LABEL[lock]} ». Décoche l’étape pour la changer.`);
+    if (lock) return setHint(`Cette case est fixée par « ${STAGE_LABEL[lock]} ». Décochez l’étape pour la modifier.`);
     if (brush !== '?' && paintRefusal(state, facelet, brush, level) === 'full')
-      return setHint(`Les 9 cases ${FACE_COLOR_PLURAL[brush]} sont déjà placées. Gomme-en une si elle est mal placée.`);
+      return setHint(`Les 9 cases ${FACE_COLOR_PLURAL[brush]} sont déjà placées. Gommez-en une si elle est mal placée.`);
     setHint(null);
     setState((s) => paint(flushPending(s), facelet, brush, level));
   };
@@ -84,7 +84,7 @@ export default function InputScreen() {
       ? `${moves} mouvement${moves > 1 ? 's' : ''} jusqu’au cube résolu`
       : status.kind === 'incomplete'
         ? `Encore ${status.remaining} case${status.remaining > 1 ? 's' : ''} à colorier`
-        : 'Corrige d’abord l’erreur signalée';
+        : 'Corrigez d’abord l’erreur signalée';
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'left', 'right']}>
@@ -97,8 +97,8 @@ export default function InputScreen() {
             />
           </View>
         }
-        title="Montre-moi ton cube"
-        subtitle="Jaune en haut, vert face à toi."
+        title="Montrez-moi votre cube"
+        subtitle="Jaune en haut, vert face à vous."
         aside={
           <QuietButton
             label="Tout effacer"
@@ -112,7 +112,7 @@ export default function InputScreen() {
         }
       />
 
-      <Text style={styles.section}>Ce que tu as déjà fini</Text>
+      <Text style={styles.section}>Étapes déjà terminées</Text>
       <StageRail level={level} onToggle={toggleStage} />
 
       <CubeStage>
@@ -172,7 +172,7 @@ function describe(status: ReturnType<typeof inputStatus>, state: string, level: 
   switch (status.kind) {
     case 'incomplete':
       return {
-        message: 'Choisis une couleur, puis touche les cases grises. Fais tourner le cube du doigt.',
+        message: 'Choisissez une couleur, puis touchez les cases grises.',
         tone: 'neutral' as const,
         highlight: [] as number[],
         focus: null,
@@ -190,7 +190,7 @@ function describe(status: ReturnType<typeof inputStatus>, state: string, level: 
     case 'invalid': {
       const f = status.validation.facelet;
       return {
-        message: f === null ? status.validation.message : `${status.validation.message} Vérifie la pièce entourée.`,
+        message: f === null ? status.validation.message : `${status.validation.message} Vérifiez la pièce entourée.`,
         tone: 'error' as const,
         highlight: f === null ? [] : pieceFacelets(f),
         focus: f,
@@ -198,7 +198,7 @@ function describe(status: ReturnType<typeof inputStatus>, state: string, level: 
     }
     case 'valid':
       return {
-        message: 'Ton cube est bon : la solution t’attend.',
+        message: 'Cube valide : la solution est prête.',
         tone: 'ok' as const,
         highlight: [] as number[],
         focus: null,
