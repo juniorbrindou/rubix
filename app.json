@@ -2,7 +2,7 @@
   "expo": {
     "name": "Rubix Coach",
     "slug": "rubix",
-    "version": "0.7.2",
+    "version": "0.8.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,7 +18,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.brindoujunior.rubix",
-      "versionCode": 702,
+      "versionCode": 800,
       "permissions": [
         "android.permission.REQUEST_INSTALL_PACKAGES"
       ]

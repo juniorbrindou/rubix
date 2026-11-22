@@ -2,6 +2,8 @@
 
 ## [À venir]
 
+## [0.8.0] — 2026-11-22
+
 - Bienvenue au premier lancement : le vrai cube reçoit ses dernières couleurs du doigt, puis se résout en
   tournant sous vos yeux après « Résoudre ».
 
@@ -10,7 +12,6 @@
 - Onglets « Mon cube | Apprendre » en haut des deux écrans ; « Effacer » devient une corbeille légendée qui
   demande confirmation.
 - Espaces insécables avant « : ? ! » : la ponctuation ne passe plus seule à la ligne.
-
 - Nouvelle police : Inter remplace Unbounded et Atkinson, pour des titres plus sobres et des mouvements plus lisibles.
 
 - Corrige le cube qui ne tournait plus après un passage par « Apprendre » : la vue 3D est recréée au retour
