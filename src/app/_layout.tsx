@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ActionButton } from '@/ui/components';
+import { UpdateBanner } from '@/ui/UpdateBanner';
 import { useAppFonts } from '@/ui/fonts';
 import { GUTTER, color, font, radius, space } from '@/ui/theme';
 
@@ -40,7 +41,12 @@ export default function RootLayout() {
         onContinue={() => setCrash(null)}
       />
     );
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <View style={{ flex: 1 }}>
+      <Stack screenOptions={{ headerShown: false }} />
+      <UpdateBanner />
+    </View>
+  );
 }
 
 /** Erreur pendant l'affichage d'un écran : expo-router rend ce composant à la place de l'écran. */

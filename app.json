@@ -18,7 +18,10 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.brindoujunior.rubix",
-      "versionCode": 700
+      "versionCode": 700,
+      "permissions": [
+        "android.permission.REQUEST_INSTALL_PACKAGES"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,7 +33,7 @@
         "expo-build-properties",
         {
           "android": {
-            "extraProguardRules": "# R8 (actif en SDK 58) retire le constructeur de GLView et GLContext.flush, appelés par réflexion/JNI : la 3D plante au démarrage. https://github.com/expo/expo/issues/51948\n-keep class expo.modules.gl.** { *; }"
+            "extraProguardRules": "# R8 (actif en SDK 58) retire le constructeur de GLView et GLContext.flush, appelés par réflexion/JNI : la 3D plante au démarrage. https://github.com/expo/expo/issues/51948\n-keep class expo.modules.gl.** { *; }\n# Mise à jour intégrée : garder les modules appelés depuis JavaScript (lancement d'intention, fichiers).\n-keep class expo.modules.intentlauncher.** { *; }\n-keep class expo.modules.filesystem.** { *; }"
           }
         }
       ],

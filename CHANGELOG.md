@@ -2,6 +2,9 @@
 
 ## [À venir]
 
+- Mise à jour intégrée : un bandeau signale une nouvelle version ; « Mettre à jour » la télécharge et ouvre
+  l'installation d'Android.
+
 ## [0.7.0] — 2026-11-22
 
 - Chaque étape a sa fiche, ouverte par le bouton « i » : le but, comment tenir le cube, la formule et le

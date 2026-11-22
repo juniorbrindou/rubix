@@ -30,6 +30,8 @@ Avancement et prochaine tâche : [`docs/FEUILLE-DE-ROUTE.md`](docs/FEUILLE-DE-RO
   `app.json`, puis `scripts/publier-apk.sh "ce qui change"`. Le script construit, dépose l'APK dans
   `/var/www/rubix-releases` (servi par le site nginx `brindoujunior`), écrit `rubix-latest.json` et vérifie le
   téléchargement. Le lien à donner est celui qu'il affiche : `https://brindoujunior.com/rubix-v<version>.apk`.
+  L'app lit `rubix-latest.json` au démarrage (`src/update`) et propose la mise à jour par un bandeau : un
+  `versionCode` qui n'augmente pas n'est jamais proposé, et seule une URL `https://brindoujunior.com/rubix-v…` est acceptée.
   Le serveur n'est pas connecté à un compte Expo : ni EAS, ni `expo start --tunnel` sans `ngrok`.
 - **Plantage sur téléphone** : aucun journal n'est accessible d'ici. Une erreur JavaScript s'affiche à l'écran
   au lieu de fermer l'app (`src/app/_layout.tsx`) : demander une capture. Si l'app se ferme quand même,
